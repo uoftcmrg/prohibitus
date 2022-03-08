@@ -1,0 +1,3 @@
+# Any compatible PyTorch
+requests
+tqdm
