@@ -33,7 +33,7 @@ def convert(source, destination, musescore_path):
     with open(job_path, 'w') as file:
         dump(job, file)
 
-    system(f'"{musescore_path}" -j {job_path}')
+    system(f'"{musescore_path}" -f -j {job_path}')
 
     remove(job_path)
 
