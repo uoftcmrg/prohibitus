@@ -1,4 +1,4 @@
-""" A program to download musescore files and convert it into abc files.
+"""A program to download musescore files.
 
 Credit to Xmader for the dataset: https://github.com/Xmader/musescore-dataset
 """
@@ -6,14 +6,14 @@ from argparse import ArgumentParser
 from csv import DictReader
 from os import mkdir
 from os.path import exists, isdir, join
-from time import sleep
+from time import sleep, time
 from urllib.parse import urljoin
 
 from requests import get
 from tqdm import tqdm
 
 
-def download(source, destination, gateway, chunk_size):
+def download(source, destination, gateway, request_delay, chunk_size):
     rows = []
 
     with open(source, 'r') as file:
@@ -33,6 +33,8 @@ def download(source, destination, gateway, chunk_size):
 
         url = urljoin(gateway, row['ref'])
 
+        begin_time = time()
+
         with get(url, stream=True) as request:
             request.raise_for_status()
 
@@ -40,7 +42,11 @@ def download(source, destination, gateway, chunk_size):
                 for chunk in request.iter_content(chunk_size=chunk_size):
                     file.write(chunk)
 
-        sleep(0.3)
+        end_time = time()
+        duration = end_time - begin_time
+
+        if duration < request_delay:
+            sleep(request_delay - duration)
 
 
 def main():
@@ -50,26 +56,32 @@ def main():
     parser.add_argument('source', metavar='<source filename>')
     parser.add_argument('destination', metavar='<destination dirname>')
     parser.add_argument(
-        '--chunk_size',
-        type=int,
-        metavar='<download chunk size>',
-        default=8192,
+        '--gateway',
+        metavar='<IPFS HTTP Gateway>',
+        default='https://ipfs.infura.io/',
     )
     parser.add_argument(
         '--request_delay',
         type=float,
         metavar='<IPFS HTTP request delay>',
-        default=0.3,
+        default=1,
     )
     parser.add_argument(
-        '--gateway',
-        metavar='<IPFS HTTP Gateway>',
-        default='https://ipfs.infura.io/',
+        '--chunk_size',
+        type=int,
+        metavar='<download chunk size>',
+        default=8192,
     )
 
     args = parser.parse_args()
 
-    download(args.source, args.destination, args.gateway, args.chunk_size)
+    download(
+        args.source,
+        args.destination,
+        args.gateway,
+        args.request_delay,
+        args.chunk_size,
+    )
 
 
 if __name__ == '__main__':
