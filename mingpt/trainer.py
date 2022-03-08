@@ -1,4 +1,5 @@
-"""
+"""Credit to karpathy for mingpt: https://github.com/karpathy/minGPT
+
 Simple training loop; Boilerplate that could apply to any arbitrary neural network,
 so nothing in this file really has anything to do with GPT specifically.
 """

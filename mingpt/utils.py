@@ -1,3 +1,4 @@
+"""Credit to karpathy for mingpt: https://github.com/karpathy/minGPT"""
 import random
 import numpy as np
 import torch
