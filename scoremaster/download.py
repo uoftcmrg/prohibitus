@@ -1,10 +1,10 @@
-"""A program to download musescore files.
+"""Copyright (c) 2022 - Juho Kim
 
-Credit to Xmader for the dataset: https://github.com/Xmader/musescore-dataset
+A program to download musescore files.
 """
 from argparse import ArgumentParser
 from csv import DictReader
-from os import mkdir
+from os import makedirs
 from os.path import exists, isdir, join
 from time import sleep, time
 from urllib.parse import urljoin
@@ -23,7 +23,7 @@ def download(source, destination, gateway, request_delay, chunk_size):
             rows.append(row)
 
     if not isdir(destination):
-        mkdir(destination)
+        makedirs(destination)
 
     for row in tqdm(rows):
         filename = join(destination, row['id'] + '.mscz')

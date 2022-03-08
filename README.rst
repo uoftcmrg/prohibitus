@@ -1,7 +1,9 @@
 Prohibitus
 ==========
 
-Primality Test AI
+Music Generation AI
+
+Credit to Xmader for the dataset: https://github.com/Xmader/musescore-dataset
 
 License
 -------
