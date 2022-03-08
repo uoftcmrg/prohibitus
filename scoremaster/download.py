@@ -26,7 +26,7 @@ def download(source, destination, gateway, request_delay, chunk_size):
         mkdir(destination)
 
     for row in tqdm(rows):
-        filename = join(destination, row['id'] + '.msz')
+        filename = join(destination, row['id'] + '.mscz')
 
         if exists(filename):
             continue
@@ -64,7 +64,7 @@ def main():
         '--request_delay',
         type=float,
         metavar='<IPFS HTTP request delay>',
-        default=1,
+        default=0.6,
     )
     parser.add_argument(
         '--chunk_size',
