@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 from glob import glob
 from json import dump
 from os import makedirs, remove, system
-from os.path import isdir, join
+from os.path import exists, isdir, join
 
 
 def convert(source, destination, musescore_path):
@@ -25,15 +25,16 @@ def convert(source, destination, musescore_path):
             input_[len(source):].replace('.mscz', '.xml'),
         )
 
-        outputs.append(output)
-        job.append({'in': input_, 'out': output})
+        if not exists(output):
+            outputs.append(output)
+            job.append({'in': input_, 'out': output})
 
     job_path = join(destination, 'job.json')
 
     with open(job_path, 'w') as file:
         dump(job, file)
 
-    system(f'"{musescore_path}" -f -j {job_path}')
+    system(f'"{musescore_path}" -j {job_path}')
 
     remove(job_path)
 

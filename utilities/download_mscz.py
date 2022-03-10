@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from csv import DictReader
+from itertools import islice
 from os import makedirs
 from os.path import exists, isdir, join
 from time import sleep, time
@@ -15,7 +16,7 @@ def download(count, source, destination, gateway, request_delay, chunk_size):
     with open(source, 'r') as file:
         reader = DictReader(file)
 
-        for row in reader[:count]:
+        for row in islice(reader, count):
             rows.append(row)
 
     if not isdir(destination):
@@ -49,7 +50,7 @@ def main():
     parser = ArgumentParser(
         description='Download musescore files from manifest',
     )
-    parser.add_argument('count', metavar='<download count>')
+    parser.add_argument('count', type=int, metavar='<download count>')
     parser.add_argument('source', metavar='<source filename>')
     parser.add_argument('destination', metavar='<destination dirname>')
     parser.add_argument(
@@ -61,7 +62,7 @@ def main():
         '--request_delay',
         type=float,
         metavar='<IPFS HTTP request delay>',
-        default=0.6,
+        default=1,
     )
     parser.add_argument(
         '--chunk_size',

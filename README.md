@@ -11,30 +11,40 @@ Music Generation AI by Juho Kim, Minchan Kim, and Nikolas Marinkovich
 
 ## Guides
 
-### Generate in ABC file format
+### Generate Music in ABC file format
 
 1. Download mscz music samples
 
 Example:
 
 ```shell
-python ./utilities/download_mscz.py ./mscz-files-small.csv ../scores/mscz
+python ./utilities/download_mscz.py 1000 ./utilities/mscz-files.csv ./resources/mscz
 ```
 
-3. Convert mscz to xml
+If you get some type of HTTP error, simply wait a bit and run the above script
+again (maybe with reduced downloade speed). The server is complaining that you
+are downloading too many things. Don't worry, already created files are skipped
+automatically.
+
+2. Convert mscz to xml
 
 Example:
 
 ```shell
-python ./mscz2xml.py ../scores/mscz/ ../scores/xml/ "C:\Program Files\MuseScore 3\bin\MuseScore3.exe"
+python ./utilities/mscz2xml.py ./resources/mscz/ ./resources/xml/ "C:\Program Files\MuseScore 3\bin\MuseScore3.exe"
 ```
 
-4. Convert xml to abc
+If it gets stuck, press Ctrl+C and try running again. It should still be stuck.
+Then, go to ./resources/xml/job.json and look at the first entry in the json
+list. That is the problematic .mscz file. Simply delete that file and rerun the
+above script. Don't worry, already created files are skipped automatically.
+
+3. Convert xml to abc
 
 Example:
 
 ```shell
-python xml2abc.py -o ../scores/abc/ ../scores/xml/*.xml
+./utilities/xml2abc.exe -o ./resources/abc/ ./resources/xml/*.xml
 ```
 
 ## Credits
