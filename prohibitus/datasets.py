@@ -18,7 +18,7 @@ class ProhibitusDataset(IterableDataset):
         for filename in filenames:
             piano_roll = load_piano_roll(filename, self.configuration)
 
-            if piano_roll.shape[0] < self.configuration.chunk_dim + 1:
+            if piano_roll.shape[0] < self.configuration.chunk_size + 1:
                 continue
 
             for chunk in sliding_window_view(

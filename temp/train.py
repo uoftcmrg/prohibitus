@@ -39,7 +39,7 @@ def sample(model, x, steps, temperature=1.0, sample=False, top_k=None):
     has quadratic complexity unlike an RNN that is only linear, and has a finite context window
     of block_size, unlike an RNN that has an infinite context window.
     """
-    block_size = model.get_block_size()
+    block_size = model.get_chunk_size()
     model.eval()
     for k in range(steps):
         x_cond = x if x.size(1) <= block_size else x[:, -block_size:] # crop context if needed
@@ -67,7 +67,7 @@ set_seed(42)
 
 
 class CharDataset(Dataset):
-    def __init__(self, data, chunk_dim):
+    def __init__(self, data, chunk_size):
         chars = sorted(list(set(data)))
         data_size, token_dim = len(data), len(chars)
         print('data has %d characters, %d unique.' % (
@@ -75,16 +75,16 @@ class CharDataset(Dataset):
 
         self.stoi = {ch: i for i, ch in enumerate(chars)}
         self.itos = {i: ch for i, ch in enumerate(chars)}
-        self.chunk_dim = chunk_dim
+        self.chunk_size = chunk_size
         self.token_dim = token_dim
         self.data = data
 
     def __len__(self):
-        return len(self.data) - self.chunk_dim
+        return len(self.data) - self.chunk_size
 
     def __getitem__(self, idx):
-        # grab a chunk of (chunk_dim + 1) characters from the data
-        chunk = self.data[idx:idx + self.chunk_dim + 1]
+        # grab a chunk of (chunk_size + 1) characters from the data
+        chunk = self.data[idx:idx + self.chunk_size + 1]
         # encode every character to an integer
         dix = [self.stoi[s] for s in chunk]
 
@@ -93,18 +93,19 @@ class CharDataset(Dataset):
         return x, y
 
 
-chunk_dim = 128  # spatial extent of the model for its context
-train_dataset = CharDataset(open('input.txt').read(), chunk_dim)
+chunk_size = 128  # spatial extent of the model for its context
+train_dataset = CharDataset(open('input.txt').read(), chunk_size)
 
 configuration = ProhibitusConfiguration(
-    token_size=train_dataset.token_dim,
-    chunk_size=train_dataset.chunk_dim,
+    token_count=train_dataset.token_dim,
+    chunk_size=train_dataset.chunk_size,
     layer_count=4,
     head_count=4,
     embedding_count=128,
+    feedforward_count=512,
     max_epochs=2, batch_size=512, learning_rate=6e-4,
     lr_decay=True, warmup_tokens=512 * 20,
-    final_tokens=2 * len(train_dataset) * chunk_dim,
+    final_tokens=2 * len(train_dataset) * chunk_size,
     num_workers=0,
 )
 model = ProhibitusModel(configuration)

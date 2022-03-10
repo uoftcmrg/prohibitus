@@ -155,7 +155,7 @@ class ProhibitusModel(ProhibitusModule):
 
         self.apply(self._setup)
 
-    def configure_optimizers(self):
+    def create_optimizer(self):
         decay = set()
         no_decay = {'positional_embedder'}
 

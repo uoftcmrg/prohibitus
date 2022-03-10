@@ -56,11 +56,12 @@ class ProhibitusConfiguration:
     attention_drop_percentage = 0.1
     residual_drop_percentage = 0.1
     embedding_drop_percentage = 0.1
-    token_dim = 128
-    chunk_dim = 512
-    embedding_dim = 768
+    chunk_size = 512
+    token_count = 128
+    embedding_count = 768
+    feedforward_count = 3072
     head_count = 12
-    layer_count = 6
+    layer_count = 12
 
     # Trainer settings
     max_epochs = 10
@@ -77,4 +78,9 @@ class ProhibitusConfiguration:
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
-            setattr(self, key, value)
+            if hasattr(self, key):
+                setattr(self, key, value)
+            else:
+                raise ValueError(f'Unknown attribute: {key}')
+
+        assert self.embedding_count % self.head_count == 0
