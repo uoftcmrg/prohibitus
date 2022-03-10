@@ -13,12 +13,12 @@ Music Generation AI by Juho Kim, Minchan Kim, and Nikolas Marinkovich
 
 ### Generate in ABC file format
 
-2. Download mscz music samples
+1. Download mscz music samples
 
 Example:
 
 ```shell
-python ./download.py ./mscz-files-small.csv ../scores/mscz
+python ./utilities/download_mscz.py ./mscz-files-small.csv ../scores/mscz
 ```
 
 3. Convert mscz to xml

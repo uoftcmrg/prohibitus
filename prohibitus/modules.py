@@ -219,3 +219,11 @@ class ProhibitusModel(ProhibitusModule):
         logits = self.decoder(x)
 
         return logits
+
+
+class ABCModel(ProhibitusModel):
+    ...
+
+
+class MidiModel(ProhibitusModel):
+    ...

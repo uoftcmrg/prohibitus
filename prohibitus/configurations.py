@@ -32,6 +32,10 @@ class ProhibitusConfiguration:
         assert self.embedding_size % self.head_count == 0
 
 
+class ABCConfiguration(ProhibitusConfiguration):
+    ...
+
+
 class MidiConfiguration(ProhibitusConfiguration):
     # Data settings
     threshold = 0.01
