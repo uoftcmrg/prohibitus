@@ -2,40 +2,20 @@
 
 Music Generation AI by Juho Kim, Minchan Kim, and Nikolas Marinkovich
 
-## Guide
+## Requirements
 
-1. Generate dataset
-
-    1. Download mscz music samples
-
-   Example:
-    ```shell
-    python ./download.py ./mscz-files-small.csv ../scores/mscz
-    ```
-
-    2. Convert mscz to xml
-
-   Example:
-    ```shell
-    python ./mscz2xml.py ../scores/mscz/ ../scores/xml/ "C:\Program Files\MuseScore 3\bin\MuseScore3.exe"
-    ```
-
-    3. Convert xml to abc
-
-   Example:
-    ```shell
-    python xml2abc.py -o ../scores/abc/ ../scores/xml/*.xml
-    ```
+- [PyTorch](https://pytorch.org/)
+- [NumPy](https://numpy.org/)
+- [tqdm](https://github.com/tqdm/tqdm)
+- [PrettyMIDI](https://github.com/craffel/pretty-midi)
 
 ## Credits
 
-- karpathy
-  - mingpt: [minimalist GPT implementation](https://github.com/karpathy/minGPT)
-- Xmader
-  - mscz-files.csv: [MuseScore dataset](https://github.com/Xmader/musescore-dataset)
-- Willem Vree
-    - xml2abc.py: MusicXML to ABC conversion
-    - abc2xml.py: ABC to MusicXML conversion
+- mingpt by karpathy: [minimalist GPT implementation](https://github.com/karpathy/minGPT)
+- Datasets
+  - [Classical Archives - The Greats (MIDI)](https://thepiratebay.org/description.php?id=6734800)
+  - [Tegridy-MIDI-Dataset by asigalov61](https://github.com/asigalov61/Tegridy-MIDI-Dataset)
+  - [midi by fredrik-johansson](https://github.com/fredrik-johansson/midi)
 
 ## License
 
