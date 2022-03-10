@@ -1,112 +1,156 @@
-import logging
-import math
+from math import cos, inf, pi
+from os.path import exists
 
 import numpy as np
-import torch
+from torch import cuda, load, save, set_grad_enabled
+from torch.nn import DataParallel
+from torch.nn.functional import cross_entropy
+from torch.nn.utils import clip_grad_norm_
 from torch.utils.data.dataloader import DataLoader
 from tqdm import tqdm
-
-logger = logging.getLogger(__name__)
 
 
 class ProhibitusTrainer:
     def __init__(self, model, train_dataset, test_dataset, configuration):
-        self.model = model
+        self.raw_model = model
         self.train_dataset = train_dataset
         self.test_dataset = test_dataset
         self.configuration = configuration
+        self.optimizer = model.create_optimizer()
 
-        # take over whatever gpus are on the system
-        self.device = 'cpu'
-        if torch.cuda.is_available():
-            self.device = torch.cuda.current_device()
-            self.model = torch.nn.DataParallel(self.model).to(self.device)
+        if cuda.is_available():
+            self.device = cuda.current_device()
+            self.model = DataParallel(self.raw_model).to(self.device)
+        else:
+            self.device = 'cpu'
+            self.model = self.raw_model
+
+        self.learning_rate = configuration.learning_rate
+        self.token_count = 0
+        self.epoch_count = 0
+        self.min_test_loss = inf
+
+        if configuration.checkpoint_path is not None \
+                and exists(configuration.checkpoint_path):
+            self.load_checkpoint()
+
+    def load_checkpoint(self):
+        checkpoint = load(self.configuration.checkpoint_path)
+
+        self.raw_model.load_state_dict(checkpoint['model_state_dict'])
+        self.learning_rate = checkpoint['learning_rate']
+        self.token_count = checkpoint['token_count']
+        self.epoch_count = checkpoint['epoch_count']
+        self.min_test_loss = checkpoint['min_test_loss']
+
+        for param_group in self.optimizer.param_groups:
+            param_group['lr'] = self.learning_rate
 
     def save_checkpoint(self):
-        # DataParallel wrappers keep raw model object in .module attribute
-        raw_model = self.model.module if hasattr(self.model,
-                                                 "module") else self.model
-        logger.info("saving %s", self.configuration.ckpt_path)
-        torch.save(raw_model.state_dict(), self.configuration.ckpt_path)
+        checkpoint = {
+            'model_state_dict': self.raw_model.state_dict(),
+            'learning_rate': self.learning_rate,
+            'token_count': self.token_count,
+            'epoch_count': self.epoch_count,
+            'min_test_loss': self.min_test_loss,
+        }
+
+        save(checkpoint, self.configuration.checkpoint_path)
 
     def train(self):
-        model, configuration = self.model, self.configuration
-        raw_model = model.module if hasattr(self.model, "module") else model
-        optimizer = raw_model.configurationure_optimizers(configuration)
+        if self.configuration.checkpoint_path is not None \
+                and not exists(self.configuration.checkpoint_path):
+            self.save_checkpoint()
 
-        def run_epoch(split):
-            is_train = split == 'train'
-            model.train(is_train)
-            data = self.train_dataset if is_train else self.test_dataset
-            loader = DataLoader(data, shuffle=True, pin_memory=True,
-                                batch_size=configuration.batch_size,
-                                num_workers=configuration.num_workers)
+        while self.epoch_count < self.configuration.max_epoch_count:
+            self._run_epoch(True)
 
-            losses = []
-            pbar = tqdm(enumerate(loader),
-                        total=len(loader)) if is_train else enumerate(loader)
-            for it, (x, y) in pbar:
+            if self.test_dataset is None:
+                test_loss = None
+            else:
+                test_loss = self._run_epoch(False)
 
-                # place data on the correct device
-                x = x.to(self.device)
-                y = y.to(self.device)
+            self.epoch_count += 1
 
-                # forward the model
-                with torch.set_grad_enabled(is_train):
-                    logits, loss = model(x, y)
-                    loss = loss.mean()  # collapse all losses if they are scattered on multiple gpus
-                    losses.append(loss.item())
-
-                if is_train:
-
-                    # backprop and update the parameters
-                    model.zero_grad()
-                    loss.backward()
-                    torch.nn.utils.clip_grad_norm_(model.parameters(),
-                                                   configuration.grad_norm_clip)
-                    optimizer.step()
-
-                    # decay the learning rate based on our progress
-                    if configuration.lr_decay:
-                        self.tokens += (
-                                    y >= 0).sum()  # number of tokens processed this step (i.e. label is not -100)
-                        if self.tokens < configuration.warmup_tokens:
-                            # linear warmup
-                            lr_mult = float(self.tokens) / float(
-                                max(1, configuration.warmup_tokens))
-                        else:
-                            # cosine learning rate decay
-                            progress = float(
-                                self.tokens - configuration.warmup_tokens) / float(
-                                max(1,
-                                    configuration.final_tokens - configuration.warmup_tokens))
-                            lr_mult = max(0.1, 0.5 * (
-                                        1.0 + math.cos(math.pi * progress)))
-                        lr = configuration.learning_rate * lr_mult
-                        for param_group in optimizer.param_groups:
-                            param_group['lr'] = lr
-                    else:
-                        lr = configuration.learning_rate
-
-                    # report progress
-                    pbar.set_description(
-                        f"epoch {epoch + 1} iter {it}: train loss {loss.item():.5f}. lr {lr:e}")
-
-            if not is_train:
-                test_loss = float(np.mean(losses))
-                logger.info("test loss: %f", test_loss)
-                return test_loss
-
-        best_loss = float('inf')
-        self.tokens = 0  # counter used for learning rate decay
-        for epoch in range(configuration.max_epochs):
-
-            run_epoch('train')
-            if self.test_dataset is not None:
-                test_loss = run_epoch('test')
-
-            # supports early stopping based on the test loss, or just save always if no test set is provided
-            good_model = self.test_dataset is None or test_loss < best_loss
-            if self.configuration.ckpt_path is not None and good_model:
-                best_loss = test_loss
+            if self.configuration.checkpoint_path is not None \
+                    and (test_loss is None or test_loss < self.min_test_loss):
+                self.min_test_loss = test_loss
                 self.save_checkpoint()
+
+    def _run_epoch(self, status):
+        self.model.train(status)
+
+        if status:
+            label = 'Train'
+            dataset = self.train_dataset
+        else:
+            label = 'Test'
+            dataset = self.test_dataset
+
+        loader = DataLoader(
+            dataset,
+            self.configuration.batch_size,
+            True,
+            pin_memory=True,
+        )
+        losses = []
+        progress_bar = tqdm(loader)
+
+        for x, y in progress_bar:
+            x = x.to(self.device)
+            y = y.to(self.device)
+
+            with set_grad_enabled(status):
+                logits = self.model(x)
+                loss = cross_entropy(
+                    logits.view(-1, logits.size(-1)),
+                    y.view(-1),
+                ).mean()
+
+                losses.append(loss.item())
+
+            if status:
+                self.model.zero_grad()
+                loss.backward()
+                clip_grad_norm_(
+                    self.model.parameters(),
+                    self.configuration.grad_norm_clip,
+                )
+                self.optimizer.step()
+
+                if self.configuration.decay_learning_rate:
+                    self.token_count += (y >= 0).sum()
+
+                    if self.token_count \
+                            < self.configuration.warmup_token_count:
+                        scalar = self.token_count / max(
+                            1,
+                            self.configuration.warmup_token_count,
+                        )
+                    else:
+                        offset = self.configuration.warmup_token_count
+                        progress = (self.token_count - offset) / max(
+                            1,
+                            self.configuration.final_token_count - offset,
+                        )
+                        scalar = max(0.1, 0.5 * (1 + cos(pi * progress)))
+
+                    self.learning_rate = \
+                        self.configuration.learning_rate * scalar
+
+                    for param_group in self.optimizer.param_groups:
+                        param_group['lr'] = self.learning_rate
+
+            progress_bar.set_description(
+                f'Epoch {self.epoch_count} | {label} loss {loss.item():.5f}'
+                f', Learning rate {self.learning_rate:e}',
+            )
+
+        loss = np.mean(losses)
+
+        progress_bar.set_description(
+            f'Epoch {self.epoch_count} | {label} loss {loss:.5f}'
+            f', Learning rate {self.learning_rate:e}',
+        )
+
+        return loss

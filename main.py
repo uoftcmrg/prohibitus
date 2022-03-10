@@ -10,7 +10,7 @@ from glob import glob
 
 contents = []
 
-for filename in glob('./scores/abc/*.abc'):
+for filename in glob('resources/abc/*.abc'):
     with open(filename) as file:
         contents.append(file.read())
 

@@ -2,7 +2,7 @@ from functools import partial
 from math import inf, sqrt
 from operator import getitem
 
-from torch import zeros, tril, ones
+from torch import ones, tril, zeros
 from torch.nn import (
     Dropout,
     Embedding,

@@ -3,6 +3,8 @@ from pretty_midi import Instrument, Note, PrettyMIDI
 
 
 def load_piano_roll(midi_file, configuration):
+    threshold = configuration.threshold * 128
+
     pm = PrettyMIDI(midi_file)
     piano_roll = pm.get_piano_roll(configuration.framerate).T
 
@@ -10,8 +12,8 @@ def load_piano_roll(midi_file, configuration):
         for note in instrument.notes:
             i = int(note.start * configuration.framerate)
 
-            if i != 0 and piano_roll[i, note.pitch] \
-                    <= configuration.threshold + piano_roll[i - 1, note.pitch]:
+            if i != 0 and piano_roll[i, note.pitch] <= threshold \
+                    + piano_roll[i - 1, note.pitch]:
                 piano_roll[i - 1, note.pitch] = 0
 
     return (piano_roll / 128).clip(0, 1)
@@ -56,25 +58,24 @@ class ProhibitusConfiguration:
     attention_drop_percentage = 0.1
     residual_drop_percentage = 0.1
     embedding_drop_percentage = 0.1
-    chunk_size = 512
     token_count = 128
-    embedding_count = 768
-    feedforward_count = 3072
+    chunk_size = 512
+    embedding_size = 768
+    feedforward_size = 3072
     head_count = 12
     layer_count = 12
 
     # Trainer settings
-    max_epochs = 10
-    batch_size = 64
     learning_rate = 3e-4
-    betas = (0.9, 0.95)
-    grad_norm_clip = 1.0
+    betas = 0.9, 0.95
     weight_decay = 0.1
-    lr_decay = False
-    warmup_tokens = 375e6
-    final_tokens = 260e9
-    ckpt_path = None
-    num_workers = 0
+    max_epoch_count = 10
+    batch_size = 64
+    grad_norm_clip = 1.0
+    decay_learning_rate = False
+    warmup_token_count = 375e6
+    final_token_count = 260e9
+    checkpoint_path = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
@@ -83,4 +84,4 @@ class ProhibitusConfiguration:
             else:
                 raise ValueError(f'Unknown attribute: {key}')
 
-        assert self.embedding_count % self.head_count == 0
+        assert self.embedding_size % self.head_count == 0
