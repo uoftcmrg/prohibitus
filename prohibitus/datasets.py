@@ -2,16 +2,20 @@ from abc import ABC, abstractmethod
 from glob import iglob
 from itertools import chain
 
-import torch
 from numpy.lib.stride_tricks import sliding_window_view
+from torch import long, tensor
 from torch.utils.data.dataset import IterableDataset
 
 from prohibitus.utilities import load_piano_roll
 
 
 class Dataset(IterableDataset, ABC):
-    def __init__(self, pathname, configuration):
-        self.pathname = pathname
+    def __init__(self, status, configuration):
+        if status:
+            self.pathname = configuration.train_pathname
+        else:
+            self.pathname = configuration.test_pathname
+
         self.configuration = configuration
 
     def __iter__(self):
@@ -33,8 +37,8 @@ class ABCDataset(Dataset):
             chunk = self.data[i:i + self.block_size + 1]
             chars = list(map(ord, chunk))
 
-            x = torch.tensor(chars[:-1], dtype=torch.long)
-            y = torch.tensor(chars[1:], dtype=torch.long)
+            x = tensor(chars[:-1], dtype=long)
+            y = tensor(chars[1:], dtype=long)
 
             yield x, y
 
@@ -51,7 +55,7 @@ class MidiDataset(Dataset):
                 self.configuration.chunk_dim + 1,
                 0,
         ):
-            x = torch.tensor(chunk[:-1])
-            y = torch.tensor(chunk[1:])
+            x = tensor(chunk[:-1])
+            y = tensor(chunk[1:])
 
             yield x, y

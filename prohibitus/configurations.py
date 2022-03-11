@@ -1,4 +1,8 @@
 class Configuration:
+    # Data settings
+    train_pathname = None
+    test_pathname = None
+
     # Model settings
     attention_drop_percentage = None
     residual_drop_percentage = None
@@ -33,6 +37,10 @@ class Configuration:
 
 
 class ABCConfiguration(Configuration):
+    # Data settings
+    train_pathname = './resources/abc/*.abc'
+    test_pathname = None
+
     # Model settings
     attention_drop_percentage = 0.1
     residual_drop_percentage = 0.1
@@ -54,13 +62,13 @@ class ABCConfiguration(Configuration):
     decay_learning_rate = True
     warmup_token_count = 5e6
     final_token_count = 1e7
-    checkpoint_path = './models/abc_checkpoint.pt'
+    checkpoint_path = './checkpoints/abc_checkpoint.pt'
 
 
 class MidiConfiguration(Configuration):
-    # Trainer settings
-    checkpoint_path = './models/midi_checkpoint.pt'
-
     # Data settings
     threshold = 0.01
     framerate = 128
+
+    # Trainer settings
+    checkpoint_path = './checkpoints/midi_checkpoint.pt'
