@@ -214,5 +214,4 @@ fabric.properties
 
 # Auxiliary files
 /resources
-/outputs
 /checkpoints

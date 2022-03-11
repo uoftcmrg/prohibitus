@@ -1,13 +1,14 @@
 from argparse import ArgumentParser
+from random import choices
 
-from torch import cat, long, multinomial, no_grad, tensor
+from torch import cat, long, multinomial, no_grad, tensor, topk
 from torch.nn.functional import softmax
 
 from prohibitus import ABCConfiguration, ABCDataset, ABCModel, ABCTrainer
 
 
 @no_grad()
-def infer(model, context, count, configuration, device):
+def infer(model, context, count, configuration, device, *, k=None):
     x = tensor(
         tuple(map(ord, context)),
         dtype=long,
@@ -15,12 +16,18 @@ def infer(model, context, count, configuration, device):
 
     model.eval()
 
-    for k in range(count):
+    for _ in range(count):
         input_ = x[:, -configuration.chunk_size:]
         logits = model(input_)
         logits = logits[:, -1, :]
         probabilities = softmax(logits, dim=-1)
-        y = multinomial(probabilities, num_samples=1)
+
+        if k is None:
+            y = multinomial(probabilities, num_samples=1)
+        else:
+            values, indices = topk(probabilities[0], k)
+            y = tensor([choices(indices, values)]).to(device)
+
         x = cat((x, y), dim=1)
 
     completion = ''.join(map(chr, x[0]))
@@ -52,6 +59,7 @@ def main():
                 10000,
                 configuration,
                 trainer.device,
+                k=10,
             ),
         )
     else:
