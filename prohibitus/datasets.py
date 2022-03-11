@@ -40,18 +40,17 @@ class Dataset(IterableDataset, ABC):
 class ABCDataset(Dataset):
     def _sub_iter(self, filename):
         with open(filename, encoding='utf-8') as file:
-            content = file.read()
+            chars = list(map(ord, file.read()))
 
-        for i in range(len(content) - self.configuration.chunk_size):
-            chunk = content[i:i + self.configuration.chunk_size + 1]
-            chars = list(map(ord, chunk))
+        for i, char in enumerate(chars):
+            if not 0 <= char < self.configuration.token_count:
+                chars[i] = 0
 
-            for i, char in enumerate(chars):
-                if not 0 <= char < self.configuration.token_count:
-                    chars[i] = 0
+        for i in range(len(chars) - self.configuration.chunk_size):
+            chunk = chars[i:i + self.configuration.chunk_size + 1]
 
-            x = tensor(chars[:-1], dtype=long)
-            y = tensor(chars[1:], dtype=long)
+            x = tensor(chunk[:-1], dtype=long)
+            y = tensor(chunk[1:], dtype=long)
 
             yield x, y
 

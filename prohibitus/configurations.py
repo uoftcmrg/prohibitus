@@ -48,17 +48,17 @@ class ABCConfiguration(Configuration):
     residual_drop_percentage = 0.1
     embedding_drop_percentage = 0.1
     token_count = 128
-    chunk_size = 512
+    chunk_size = 128
     embedding_size = 128
     feedforward_size = 512
-    head_count = 8
+    head_count = 4
     layer_count = 4
 
     # Trainer settings
-    learning_rate = 5e-4
+    learning_rate = 6e-4
     betas = 0.9, 0.95
     weight_decay = 0.1
-    max_epoch_count = 20
+    max_epoch_count = 2
     batch_size = 512
     grad_norm_clip = 1.0
     decay_learning_rate = True

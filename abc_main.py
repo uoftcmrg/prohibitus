@@ -7,11 +7,11 @@ from prohibitus import ABCConfiguration, ABCDataset, ABCModel, ABCTrainer
 
 
 @no_grad()
-def infer(model, context, count, configuration):
+def infer(model, context, count, configuration, device):
     x = tensor(
         tuple(map(ord, context)),
         dtype=long,
-    ).unsqueeze(0).to(model.device)
+    ).unsqueeze(0).to(device)
 
     model.eval()
 
@@ -23,7 +23,7 @@ def infer(model, context, count, configuration):
         y = multinomial(probabilities, num_samples=1)
         x = cat((x, y), dim=1)
 
-    completion = ''.join(map(chr, x))
+    completion = ''.join(map(chr, x[0]))
 
     return completion
 
@@ -44,8 +44,18 @@ def main():
 
     if args.command == 'train':
         trainer.train()
+    elif args.command == 'infer':
+        print(
+            infer(
+                model,
+                'X',
+                2000,
+                configuration,
+                trainer.device,
+            ),
+        )
     else:
-        print(infer(model, 'X', 10000, configuration))
+        print(f'unknown command: {args.command}')
 
 
 if __name__ == '__main__':
