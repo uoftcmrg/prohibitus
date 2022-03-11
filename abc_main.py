@@ -48,8 +48,8 @@ def main():
         print(
             infer(
                 model,
-                'X',
-                2000,
+                'X:40\nL:1/8\nQ:1/4=132\nM:4/4\nI:linebreak $\nK:F\nV:1 treble\nV:2 bass\nL:1/4\nV:1',
+                10000,
                 configuration,
                 trainer.device,
             ),
