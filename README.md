@@ -47,6 +47,22 @@ Example:
 ./utilities/xml2abc.exe -o ./resources/abc/ ./resources/xml/*.xml
 ```
 
+4. Train AI
+
+Example:
+
+```shell
+python ./abc_main.py train
+```
+
+4. Generate Music in ABC format
+
+Example:
+
+```shell
+python ./abc_main.py infer
+```
+
 ## Credits
 
 - Inspiration
