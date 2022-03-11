@@ -1,4 +1,7 @@
-class Configuration:
+from abc import ABC
+
+
+class Configuration(ABC):
     # Data settings
     train_pathname = None
     test_pathname = None
