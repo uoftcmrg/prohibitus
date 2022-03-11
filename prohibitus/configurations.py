@@ -61,13 +61,13 @@ class ABCConfiguration(Configuration):
     learning_rate = 6e-4
     betas = 0.9, 0.95
     weight_decay = 0.1
-    max_epoch_count = 2
+    max_epoch_count = 10
     batch_size = 512
     grad_norm_clip = 1.0
     decay_learning_rate = True
     warmup_token_count = 5e6
     final_token_count = 1e7
-    checkpoint_path = './checkpoints/abc_checkpoint.pt'
+    checkpoint_path = './checkpoints/abc/checkpoint.pt'
 
 
 class MidiConfiguration(Configuration):
@@ -76,4 +76,4 @@ class MidiConfiguration(Configuration):
     framerate = 128
 
     # Trainer settings
-    checkpoint_path = './checkpoints/midi_checkpoint.pt'
+    checkpoint_path = './checkpoints/abc/midi_checkpoint.pt'
