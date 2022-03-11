@@ -115,7 +115,7 @@ class Block(ProhibitusModule):
         return x
 
 
-class ProhibitusModel(ProhibitusModule):
+class Model(ProhibitusModule):
     @staticmethod
     def _setup(module):
         if isinstance(module, (Linear, Embedding)):
@@ -221,9 +221,9 @@ class ProhibitusModel(ProhibitusModule):
         return logits
 
 
-class ABCModel(ProhibitusModel):
+class ABCModel(Model):
     ...
 
 
-class MidiModel(ProhibitusModel):
+class MidiModel(Model):
     ...

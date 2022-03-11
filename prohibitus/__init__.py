@@ -1,28 +1,36 @@
 __all__ = (
     'ABCConfiguration',
+    'Configuration',
     'MidiConfiguration',
-    'ProhibitusConfiguration',
-
+    'ABCDataset',
+    'Dataset',
+    'MidiDataset',
     'ABCModel',
     'Block',
     'CausalSelfAttention',
     'MidiModel',
-    'ProhibitusModel',
+    'Model',
     'ProhibitusModule',
-
-    'ProhibitusTrainer',
+    'ABCTrainer',
+    'MidiTrainer',
+    'Trainer',
+    'load_piano_roll',
+    'save_piano_roll',
 )
+
 from prohibitus.configurations import (
     ABCConfiguration,
+    Configuration,
     MidiConfiguration,
-    ProhibitusConfiguration,
 )
+from prohibitus.datasets import ABCDataset, Dataset, MidiDataset
 from prohibitus.modules import (
     ABCModel,
     Block,
     CausalSelfAttention,
     MidiModel,
-    ProhibitusModel,
+    Model,
     ProhibitusModule,
 )
-from prohibitus.trainers import ProhibitusTrainer
+from prohibitus.trainers import ABCTrainer, MidiTrainer, Trainer
+from prohibitus.utilities import load_piano_roll, save_piano_roll

@@ -10,7 +10,7 @@ from torch.utils.data.dataloader import DataLoader
 from tqdm import tqdm
 
 
-class ProhibitusTrainer:
+class Trainer:
     def __init__(self, model, train_dataset, test_dataset, configuration):
         self.raw_model = model
         self.train_dataset = train_dataset
@@ -154,3 +154,11 @@ class ProhibitusTrainer:
         )
 
         return loss
+
+
+class ABCTrainer(Trainer):
+    ...
+
+
+class MidiTrainer(Trainer):
+    ...
