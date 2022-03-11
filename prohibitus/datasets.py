@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from glob import iglob
-from itertools import chain
+from itertools import chain, islice
+from random import shuffle
 
 from numpy.lib.stride_tricks import sliding_window_view
 from torch import long, tensor
@@ -21,7 +22,15 @@ class Dataset(IterableDataset, ABC):
     def __iter__(self):
         matches = iglob(self.pathname, recursive=True)
 
-        yield from chain.from_iterable(map(self._sub_iter, matches))
+        iterable = chain.from_iterable(map(self._sub_iter, matches))
+
+        batch = None
+
+        while batch or batch is None:
+            batch = list(islice(iterable, self.configuration.shuffle_count))
+            shuffle(batch)
+
+            yield from batch
 
     @abstractmethod
     def _sub_iter(self, filename):
@@ -30,12 +39,16 @@ class Dataset(IterableDataset, ABC):
 
 class ABCDataset(Dataset):
     def _sub_iter(self, filename):
-        with open(filename) as file:
+        with open(filename, encoding='utf-8') as file:
             content = file.read()
 
-        for i in range(len(content) - self.block_size):
-            chunk = self.data[i:i + self.block_size + 1]
+        for i in range(len(content) - self.configuration.chunk_size):
+            chunk = content[i:i + self.configuration.chunk_size + 1]
             chars = list(map(ord, chunk))
+
+            for i, char in enumerate(chars):
+                if not 0 <= char < self.configuration.token_count:
+                    chars[i] = 0
 
             x = tensor(chars[:-1], dtype=long)
             y = tensor(chars[1:], dtype=long)

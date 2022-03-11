@@ -2,6 +2,7 @@ class Configuration:
     # Data settings
     train_pathname = None
     test_pathname = None
+    shuffle_count = None
 
     # Model settings
     attention_drop_percentage = None
@@ -40,6 +41,7 @@ class ABCConfiguration(Configuration):
     # Data settings
     train_pathname = './resources/abc/*.abc'
     test_pathname = None
+    shuffle_count = 100000
 
     # Model settings
     attention_drop_percentage = 0.1
@@ -47,10 +49,10 @@ class ABCConfiguration(Configuration):
     embedding_drop_percentage = 0.1
     token_count = 128
     chunk_size = 512
-    embedding_size = 256
-    feedforward_size = 1024
+    embedding_size = 128
+    feedforward_size = 512
     head_count = 8
-    layer_count = 6
+    layer_count = 4
 
     # Trainer settings
     learning_rate = 5e-4

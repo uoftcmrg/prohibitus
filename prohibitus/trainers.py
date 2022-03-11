@@ -1,5 +1,6 @@
 from math import cos, inf, pi
-from os.path import exists
+from os import makedirs
+from os.path import dirname, exists
 
 import numpy as np
 from torch import cuda, load, save, set_grad_enabled
@@ -55,6 +56,11 @@ class Trainer:
             'min_test_loss': self.min_test_loss,
         }
 
+        dirname_ = dirname(self.configuration.checkpoint_path)
+
+        if not exists(dirname_):
+            makedirs(dirname_)
+
         save(checkpoint, self.configuration.checkpoint_path)
 
     def train(self):
@@ -90,7 +96,6 @@ class Trainer:
         loader = DataLoader(
             dataset,
             self.configuration.batch_size,
-            True,
             pin_memory=True,
         )
         losses = []
