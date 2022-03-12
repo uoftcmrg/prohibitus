@@ -78,7 +78,7 @@ class MidiConfiguration(Configuration):
     # Data settings
     train_pathname = './resources/midi/train/**/*.mid'
     test_pathname = './resources/midi/test/**/*.mid'
-    shuffle_count = 1e7
+    shuffle_count = 10000000
     threshold = 0.01
     framerate = 128
 
