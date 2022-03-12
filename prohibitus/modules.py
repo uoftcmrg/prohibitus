@@ -189,11 +189,11 @@ class Model(ProhibitusModule, ABC):
 
         groups = (
             {
-                'params': map(partial(getitem, parameters), decay),
+                'params': map(partial(getitem, parameters), sorted(decay)),
                 'weight_decay': self.configuration.weight_decay,
             },
             {
-                'params': map(partial(getitem, parameters), no_decay),
+                'params': map(partial(getitem, parameters), sorted(no_decay)),
                 'weight_decay': 0,
             },
         )

@@ -19,6 +19,10 @@ class Trainer:
         self.test_dataset = test_dataset
         self.configuration = configuration
         self.optimizer = model.create_optimizer()
+        self.learning_rate = configuration.learning_rate
+        self.token_count = 0
+        self.epoch_count = 0
+        self.min_test_loss = inf
 
         if cuda.is_available():
             self.device = cuda.current_device()
@@ -26,11 +30,6 @@ class Trainer:
         else:
             self.device = 'cpu'
             self.model = self.raw_model
-
-        self.learning_rate = configuration.learning_rate
-        self.token_count = 0
-        self.epoch_count = 0
-        self.min_test_loss = inf
 
         if configuration.checkpoint_path is not None \
                 and exists(configuration.checkpoint_path):
@@ -40,6 +39,7 @@ class Trainer:
         checkpoint = load(self.configuration.checkpoint_path)
 
         self.raw_model.load_state_dict(checkpoint['model_state_dict'])
+        self.optimizer.load_state_dict(checkpoint['optimizer'])
         self.learning_rate = checkpoint['learning_rate']
         self.token_count = checkpoint['token_count']
         self.epoch_count = checkpoint['epoch_count']
@@ -51,6 +51,7 @@ class Trainer:
     def save_checkpoint(self):
         checkpoint = {
             'model_state_dict': self.raw_model.state_dict(),
+            'optimizer': self.optimizer.state_dict(),
             'learning_rate': self.learning_rate,
             'token_count': self.token_count,
             'epoch_count': self.epoch_count,
