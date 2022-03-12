@@ -22,6 +22,7 @@ __all__ = (
     'save_piano_roll',
     'save_pro',
     'seconds_to_reversed_str_milliseconds',
+    'trim_midi',
 )
 
 from prohibitus.configurations import (
@@ -48,4 +49,5 @@ from prohibitus.utilities import (
     save_piano_roll,
     save_pro,
     seconds_to_reversed_str_milliseconds,
+    trim_midi,
 )

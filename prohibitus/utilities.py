@@ -78,6 +78,33 @@ def save_pro(pro, filename):
     pm.write(filename)
 
 
+def trim_midi(midi_file, start, end):
+    pm1 = PrettyMIDI(midi_file)
+    pm2 = PrettyMIDI()
+
+    for instrument1 in pm1.instruments:
+        instrument2 = Instrument(
+            instrument1.program,
+            instrument1.is_drum,
+            instrument1.name,
+        )
+
+        for note1 in instrument1.notes:
+            if start <= note1.end <= end or start <= note1.start <= end:
+                note2 = Note(
+                    note1.velocity,
+                    note1.pitch,
+                    max(note1.start, start),
+                    min(note1.end, end),
+                )
+
+                instrument2.notes.append(note2)
+
+        pm2.instruments.append(instrument2)
+
+    pm2.write(midi_file)
+
+
 def load_piano_roll(midi_file, configuration):
     threshold = configuration.threshold * 128
 
