@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from functools import partial
-from glob import iglob
+from glob import glob
 from itertools import chain, islice
 from operator import getitem
 from random import shuffle
@@ -22,7 +22,9 @@ class Dataset(IterableDataset, ABC):
         self.configuration = configuration
 
     def __iter__(self):
-        matches = iglob(self.pathname, recursive=True)
+        matches = glob(self.pathname, recursive=True)
+        shuffle(matches)
+
         iterable = chain.from_iterable(map(self._sub_iter, matches))
         batch = None
 
