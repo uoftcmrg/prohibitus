@@ -31,7 +31,7 @@ def infer(model, context, count, device, configuration):
 
     lookup = dict(map(reversed, MidiDataset.indices.items()))
 
-    completion = ''.join(map(partial(getitem, lookup), x[0]))
+    completion = ''.join(map(partial(getitem, lookup), map(int, x[0])))
 
     return completion
 

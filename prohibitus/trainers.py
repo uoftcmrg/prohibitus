@@ -1,6 +1,7 @@
 from math import cos, inf, pi
 from os import makedirs
 from os.path import dirname, exists
+from time import time
 
 import numpy as np
 from torch import cuda, load, save, set_grad_enabled
@@ -17,6 +18,7 @@ class Trainer:
         self.test_dataset = test_dataset
         self.configuration = configuration
         self.criterion = CrossEntropyLoss()
+        self.save_time = -inf
 
         self.optimizer = model.create_optimizer()
         self.learning_rate = configuration.learning_rate
@@ -45,7 +47,14 @@ class Trainer:
         self.epoch_count = checkpoint['epoch_count']
         self.min_test_loss = checkpoint['min_test_loss']
 
-    def save_checkpoint(self):
+    def save_checkpoint(self, auto=False):
+        self.save_time = time()
+
+        if auto:
+            path = self.configuration.autosave_path
+        else:
+            path = self.configuration.checkpoint_path
+
         checkpoint = {
             'model_state_dict': self.raw_model.state_dict(),
             'optimizer': self.optimizer.state_dict(),
@@ -55,12 +64,12 @@ class Trainer:
             'min_test_loss': self.min_test_loss,
         }
 
-        dirname_ = dirname(self.configuration.checkpoint_path)
+        dirname_ = dirname(path)
 
         if not exists(dirname_):
             makedirs(dirname_)
 
-        save(checkpoint, self.configuration.checkpoint_path)
+        save(checkpoint, path)
 
     def train(self):
         if self.configuration.checkpoint_path is not None \
@@ -146,6 +155,13 @@ class Trainer:
                 f'Epoch {self.epoch_count} | {label} loss {loss.item():.5f}'
                 f', Learning rate {self.learning_rate:e}',
             )
+
+            time_difference = time() - self.save_time
+
+            if self.configuration.autosave_path is not None \
+                    and self.configuration.autosave_interval is not None \
+                    and time_difference > self.configuration.autosave_interval:
+                self.save_checkpoint(True)
 
         loss = np.mean(losses)
 
