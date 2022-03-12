@@ -11,6 +11,24 @@ Music Generation AI by Juho Kim, Minchan Kim, and Nikolas Marinkovich
 
 ## Guides
 
+### Generate Music in MIDI file format
+
+1. Train AI
+
+Example:
+
+```shell
+python ./midi_main.py train
+```
+
+2. Generate Music in MIDI format
+
+Example:
+
+```shell
+python ./midi_main.py infer --filename <filename> --count 8000
+```
+
 ### Generate Music in ABC file format
 
 1. Download mscz music samples
@@ -55,18 +73,19 @@ Example:
 python ./abc_main.py train
 ```
 
-4. Generate Music in ABC format
+5. Generate Music in ABC format
 
 Example:
 
 ```shell
-python ./abc_main.py infer
+python ./abc_main.py infer --filename <filename> --count 8000
 ```
 
 ## Credits
 
 - Inspiration
-    - [karpathy: mingpt](https://github.com/karpathy/minGPT)
+  - [GPT-3](https://arxiv.org/abs/2005.14165)
+  - [karpathy: mingpt](https://github.com/karpathy/minGPT)
 - Music score file format conversion
     - [Willem Vree: xml2abc.exe](https://wim.vree.org/svgParse/xml2abc.html)
     - [Willem Vree: abc2xml.exe](https://wim.vree.org/svgParse/abc2xml.html)
