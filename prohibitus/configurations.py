@@ -97,7 +97,7 @@ class MidiConfiguration(Configuration):
     learning_rate = 6e-4
     betas = 0.9, 0.95
     weight_decay = 0.1
-    max_epoch_count = 20
+    max_epoch_count = 2
     batch_size = 256
     grad_norm_clip = 1.0
     decay_learning_rate = True
