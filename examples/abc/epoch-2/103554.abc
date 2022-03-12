@@ -1,0 +1,79 @@
+X:8
+T:Thee (zonder suiker)
+T:inspired by a song from level 42
+T:arr: Debbie van den Berg / Saskia Coolen
+Z:Gannasi
+%%score 1 2 3
+L:1/16
+M:4/4
+I:linebreak $
+K:Eb
+V:1 treble nm="Alto Recorder"
+V:2 treble nm="Alto Recorder"
+V:3 treble nm="Alto Recorder"
+V:1
+ z2 z2 z4 z8 | z8 f2f2 f2>f2 | z16 |$ z8 z2 f2 z f2 z |:!f! dfgf =b4 z2 df gagf | %5
+ g3g2fag2fag2fgf :|$ dfgf =b4 z2 df gagf | g3g2fag2fag2fgf | dfgf =b4 z2 df gagf |$ %9
+ g3g2fga =bagf gag2 || f8- f2 z2 f2=e2- |$ e2 c4 z2 z2 d2=e2d2 | (3f4 f4 f4 d4 f2=e2- |$ %13
+ e2 c4 B4 d3=e3 | f8- f2 z2 f2=e2- |$ e2 c4 z4 z4 =e2 | (3f4 f4 f4 d4 f2=e2- |$ e2 c4 B4 z2 z4 || %18
+ Bc2c2dd2- d4 cd2d- |$ d=ee2- e4 f3e3d2- | d4 z2 d2 d2G2=A2B2- | B8 z8 |:$ z2 z2 d2c2 c2>B2 z ggg | %23
+ fg z2 z4 z8 :| z4 d2c2 c3B3f2- |$ f4 f2=e2 f2e2 dc2B- | B4 d2c2 c2>B2 z ggg |$ %27
+ fg z2 z ggg fg z f z f z f |: z3 d f2f2 f2fg z4 |$ z3 d f2f2 f2fg z4 :|!p! d4 f2g2- g8 | z16 | %32
+ d4 f2 g4 f2 =e2fe | c4 z8 z4 |$ d4 f2 d4 c2=B2c2- | c4 z8 z4 | d4 f2 f4 d2f2=e2- | e8- ed2c2d3- |$ %38
+ d16 | z16 | B8 FGfg z4 |$ z16 |!ff! b=bc'=a _bgdB2Bcd BGb=b |$[M:3/4] c'=abg d2<B2 cdBG | %44
+[M:4/4]!p! g16 | f16 | d16 | c8 B8 | g16 | f16 | d16 | c8 B8 |: d2f2g2f2 =b8- |$ b4 d2f2 g2a2g2f2 | %54
+ g6 g4 f2a2g2- | g2f2a2 g4 f2g2f2 ::"^con voce" g16 | f16 |$ d16 | c16 :| g16 | f16 | d16 |$ c16 | %64
+ g8 f8 | d8 c4 B4 ||!fff! !>!g4 !>!g4 !>!g4 !>!!fermata!g4 | z16 ||$!f! f4 f2=e2 d2e2f2e2- | %69
+ e2 c4 B4 d2=e2d2 |$ f2=e2d2e2 f4 f2e2- | e2c2 B4 z2 z2 z2 =e2 |$ f3g3=a3f3-f2d2 | %73
+ =e2fe2cB2- B4 z2 e2 | f2=ed2e f4 d4 e2 |$ f=e2d2dd2 z8 | z16 |$ z16 | z16 |$ z8 z4 z4 | %80
+ b=bc'=a _bgdB2Bcd BGb=b |$[M:3/4] c'=abg d2<B2 cdBG |:[M:4/4] G2GG (fg)GG G2GG (fg)GG |$ %83
+ c2cc (bc')cc B2BB (ab)BB | G2GG (fg)GG G2GG (fg)GG |$ c2cc (bc')cc B2BB (ab)BB :: BB=AB z4 z8 |$ %87
+ BB=AB z4 ABBA B2 z2 | z4 f2=e2 f3g3g2 |$ z4 z2 d2 fggf g2 z2 :: bb=ab z4 z8 |$ %91
+ bb=ab z4 abba b2 z2 :: G2GG (fg)GG G2GG (fg)GG |$ c2cc (bc')cc B2BB (ab)BB | %94
+ G2GG (fg)GG G2GG (fg)GG |$"^repeat and decresendo ad. lib." c2cc (bc')cc B2BB (ab)BB :| %96
+V:2
+ z16 | z8 f2f2 f2>f2 | z16 |$ z8 z2 f2 z f2 z |: dfgf =b4 z2 df gagf | g3g2fag2fag2fgf :|$ %6
+ dfgf d'4 z2 df gagf | g3g2fag2fag2fgf | dfgf d'4 z2 df gagf |$ g3g2fga =bagf gag2 || %10
+!mf! G=BdB GBd z GBdB GBd z |$ c=ege ceg z Bdfd Bdf z | G=BdB GBd z GBdB GBd z |$ %13
+ c=ege ceg z Bdfd Bdf z | G=BdB GBd z GBdB GBd z |$ c=ege ceg z Bdfd Bdf z | %16
+ G=BdB GBd z GBdB GBd z |$ c=ege ceg z Bdfd Bdf z || z16 |$ z16 | z16 | z16 |:$ z4 f2=e2 f3g3g2 | %23
+ z2 c3c3 B3B3 z2 :| G2GG (fg)GG G2GG (fg)GG |$ c2cc (bc')cc B2BB (ab)BB | %26
+ G2GG (fg)GG G2GG (fg)GG |$ c2cc (bc')cc B2BB (ab)BB |: G2GG (fg)GG G2GG (fg)GG |$ %29
+ c2cc (bc')cc B2BB (ab)BB :| B4 d2e2- e8 | z16 | B4 d2=e2- e8 | z16 |$ d4 f2 g4 =a2g2=e2- | %35
+ e4 z4 z8 | B4 d2=e2- e8 | z8 z4 z G3- |$ G16 | z16 | G8 z8 |$ z16 |!ff! b=bc'=a _bgdB2Bcd BGb=b |$ %43
+[M:3/4] c'=abg d2<B2 cdBG |[M:4/4]!p! d16 | c16 | =A16 | G16 | d16 | c16 | =A16 | G16 |: %52
+"^con voce" d16 |$ c16 | =A16 | G16 :: d8- d2e2f2d2 | c8- c2d2_d2B2 |$ =A8 B4 A4 | G16 :| d16 | %61
+ c16 | =A16 |$ G16 | d8 c8 | =A8 G8 ||!fff! !>!d4 !>!d4 !>!d4 !>!!fermata!d4 | z16 ||$ %68
+!f! z =BdB z BdB z BdB z BdB | z =ege z ege z dfd z dfd |$ z =BdB z BdB z BdB z BdB | %71
+ z =ege z ege z dfd z dfd |$ z16 | z16 | z16 |$ z8 z4 z4 | G2fg Gf2g2G2f2gG2 |$ %77
+ c2bc' cc'2b2B2a2bab | G2fg Gf2g2G2f2gG2 |$ c2bc'2c2B2a2b b2G2 | b=bc'=a _bgdB2Bcd BGb=b |$ %81
+[M:3/4] c'=abg d2<B2 cdBG |:[M:4/4] d(fg)d (fg)d(f g)d(fg) d(fg)d |$ %83
+ (fg)d(f g)d(fg) d(fg)d (fg)d(f | g)d(fg) !^!f2!^!f2 f2>f2 z4 |$ z4 z4 !^!f2!^!f2 f2>f2 :: g16 |$ %87
+ f16 | =e16 |$ e12 d4 :: G2GG (fg)GG G2GG (fg)GG |$ c2cc (bc')cc B2BB (ab)BB :: %92
+ gdgd fg z2 z4 z ggg |$ gg z2 ggfg z4 z ggg | fg z2 z4 z8 |$ %95
+"^repeat and decresendo ad. lib." ggfg z4 fggf gfg2 :| %96
+V:3
+ G2GG (fg)GG G2GG (fg)GG | c2cc (bc')cc B2BB (ab)BB | G2GG (fg)GG G2GG (fg)GG |$ %3
+ c2cc (bc')cc B2BB (ab) z z |:!f!!f! dfgf =b4 z2 df gagf | g3g2fag2fag2fgf :|$ %6
+ dfgf =b4 z2 df gagf | g3g2fag2fag2fgf | dfgf =b4 z2 df gagf |$ g3g2fga =bagf gag2 || %10
+!mf! G2GG (fg)GG G2GG (fg)GG |$ c2cc (bc')cc B2BB (ab)BB | G2GG (fg)GG G2GG (fg)GG |$ %13
+ c2cc (bc')cc B2BB (ab)BB | G2GG (fg)GG G2GG (fg)GG |$ c2cc (bc')cc B2BB (ab)BB | %16
+ G2GG (fg)GG G2GG (fg)GG |$ c2cc (bc')cc B2BB (ab)BB || G2GG (fg)GG G2GG (fg)GG |$ %19
+ c2cc (bc')cc B2BB (ab)BB | G2GG (fg)GG G2GG (fg)GG | c2cc (bc')cc B2BB (ab)BB |:$ %22
+ G2GG (fg)GG G2GG (fg)GG | c2cc (bc')cc B2BB (ab)BB :|!f! B12 z ggg |$ fg z2 z ggg fg z f z f z f | %26
+ B12 G4 |$ G4 G2F2 G2B2 GF2G |: =b=agf2f2f2df z fg z2 |$ f=edf2d2c2Bcd B2<G2 :|!p!!p! G4 B2c2- c8 | %31
+ z16 | G4 B2c2- c8 | z16 |$ G4 B2c2- c8 | z8 z4 z4 | G4 B2c2- c8 | z8 z4 z4 |$ %38
+!mp! G2GG (fg)GG G2GG (fg)GG | c2cc (bc')cc B2BB (ab)BB | G2GG (fg)GG G2GG (fg)GG |$ %41
+ c2cc (bc')cc B2BB (ab)BB |!ff! b=bc'=a _bgdB2Bcd BGb=b |$[M:3/4] c'=abg d2<B2 cdBG | %44
+[M:4/4]!p! G16 | B16 | =A16 | G16 | G16 | B16 | =A16 | G16 |:"^con voce" G16 |$ B16 | =A16 | G16 :: %56
+ =b2=a2g2 f4 f4 f2- | f2d2f2 z2 f2g2 z4 |$ f2=e2d2 f4 d4 c2- | c2B2c2d2 B2G2- G4 :| %60
+ G4 G2G2 f2g2G2G2- | G4 G2G2 f2g2G2G2 | G4 G2G2 f2g2G2G2- |$ G4 G2G2 f2g2G2G2 | %64
+ G2GG (fg)GG G2GG (fg)GG | c2cc (bc')cc B2BB (ab)BB ||!fff! !>!G4 !>!G4 !>!G4 !>!!fermata!G4 | %67
+ z16 ||$!f! G2GG fgG2 z G2G fgG2 | c2cc bc'c2 z BBB abB2 |$ GGgG fgGG gGfg GfgG | %71
+ ccc'c bc'cc' BBbB abab |$ G2GG =B2Bd2d2B2BBB | c2cc =e2eB2B2d2dcd | G2GG =B2Bd2d2B2BBB |$ %75
+ c2cc =e2eB2B2d2dcd | z =BdB z BdB z BdB z BdB |$ z =ege z ege z dfd z dfd | %78
+ z =BdB z BdB z BdB z BdB |$ z =ege z ege z dfd z ega | b=bc'=a _bgdB2Bcd BGb=b |$ %81
+[M:3/4] c'=abg d2<B2 cdBG |:[M:4/4] dfgf =b4 z2 df gagf |$ g3g2fag2fag2fgf | dfgf =b4 z2 df gagf |$ %85
+ g3g2fag2fag2fgf :: dGGG cGGG dGGG fGGG |$ gGGG fGGG BGGG AGGG | GGdG GGcG GGdG GGfG |$ %89
+ GGgG GGfG GGBG GG=AG :: gdfg z4 z8 |$ gdfg z4 fggf g2 z2 :: !^!b2!^!b2 =ab z2 z4 z bbb |$ %93
+ =ab z2 bbab z4 z bbb | =ab z2 z4 z8 |$"^repeat and decresendo ad. lib." bb=ab z4 _abba bab2 :| %96

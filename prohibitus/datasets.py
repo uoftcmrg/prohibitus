@@ -1,13 +1,15 @@
 from abc import ABC, abstractmethod
+from functools import partial
 from glob import iglob
 from itertools import chain, islice
+from operator import getitem
 from random import shuffle
 
 from numpy.lib.stride_tricks import sliding_window_view
 from torch import long, tensor
 from torch.utils.data import IterableDataset
 
-from prohibitus.utilities import load_piano_roll
+from prohibitus.utilities import load_pro
 
 
 class Dataset(IterableDataset, ABC):
@@ -34,21 +36,12 @@ class Dataset(IterableDataset, ABC):
     def _sub_iter(self, filename):
         ...
 
-
-class ABCDataset(Dataset):
-    def _sub_iter(self, filename):
-        with open(filename, encoding='utf-8') as file:
-            chars = list(map(ord, file.read()))
-
-        if len(chars) < self.configuration.chunk_size + 1:
+    def _sub_iter_aux(self, content):
+        if len(content) < self.configuration.chunk_size + 1:
             return
 
-        for i, char in enumerate(chars):
-            if not 0 <= char < self.configuration.token_count:
-                chars[i] = 0
-
         for chunk in sliding_window_view(
-                chars,
+                content,
                 self.configuration.chunk_size + 1,
                 0,
         ):
@@ -58,19 +51,35 @@ class ABCDataset(Dataset):
             yield x, y
 
 
-class MidiDataset(Dataset):
+class ABCDataset(Dataset):
     def _sub_iter(self, filename):
-        piano_roll = load_piano_roll(filename, self.configuration)
+        with open(filename, encoding='utf-8') as file:
+            chars = list(map(ord, file.read()))
 
-        if piano_roll.shape[0] < self.configuration.chunk_size + 1:
-            return
+        for i, char in enumerate(chars):
+            if not 0 <= char < self.configuration.token_count:
+                chars[i] = 0
 
-        for chunk in sliding_window_view(
-                piano_roll,
-                self.configuration.chunk_size + 1,
-                0,
-        ):
-            x = tensor(chunk[:-1])
-            y = tensor(chunk[1:])
+        yield from self._sub_iter_aux(chars)
 
-            yield x, y
+
+class MidiDataset(Dataset):
+    indices = {
+        '0': 0,
+        '1': 1,
+        '2': 2,
+        '3': 3,
+        '4': 4,
+        '5': 5,
+        '6': 6,
+        '7': 7,
+        '8': 8,
+        '9': 9,
+        ' ': 10,
+        '\n': 11,
+    }
+
+    def _sub_iter(self, filename):
+        pro = tuple(map(partial(getitem, self.indices), load_pro(filename)))
+
+        yield from self._sub_iter_aux(pro)

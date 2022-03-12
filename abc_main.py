@@ -31,7 +31,11 @@ def main():
     )
     parser.add_argument('command', metavar='<command>')
     parser.add_argument('--filename', metavar='<filename to continue>')
-    parser.add_argument('--count', metavar='<number of generated characters>')
+    parser.add_argument(
+        '--count',
+        type=int,
+        metavar='<number of generated characters>',
+    )
 
     args = parser.parse_args()
 
