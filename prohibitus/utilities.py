@@ -19,7 +19,10 @@ def reversed_str_milliseconds_to_seconds(value):
 
 
 def load_pro(midi_file):
-    pm = PrettyMIDI(midi_file)
+    try:
+        pm = PrettyMIDI(midi_file)
+    except Exception:
+        return ''
 
     notes = []
 

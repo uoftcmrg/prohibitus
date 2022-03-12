@@ -53,7 +53,7 @@ def main():
     configuration = MidiConfiguration()
     model = MidiModel(configuration)
     train_dataset = MidiDataset(True, configuration)
-    test_dataset = None
+    test_dataset = MidiDataset(False, configuration)
     trainer = MidiTrainer(model, train_dataset, test_dataset, configuration)
 
     if args.command == 'train':

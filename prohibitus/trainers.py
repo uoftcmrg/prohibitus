@@ -158,7 +158,7 @@ class Trainer:
 
             time_difference = time() - self.save_time
 
-            if self.configuration.autosave_path is not None \
+            if status and self.configuration.autosave_path is not None \
                     and self.configuration.autosave_interval is not None \
                     and time_difference > self.configuration.autosave_interval:
                 self.save_checkpoint(True)

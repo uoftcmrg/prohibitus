@@ -76,8 +76,8 @@ class ABCConfiguration(Configuration):
 
 class MidiConfiguration(Configuration):
     # Data settings
-    train_pathname = './resources/midi/*.mid'
-    test_pathname = None
+    train_pathname = './resources/midi/train/**/*.mid'
+    test_pathname = './resources/midi/test/**/*.mid'
     shuffle_count = 1000000
     threshold = 0.01
     framerate = 128
