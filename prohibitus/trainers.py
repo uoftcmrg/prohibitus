@@ -45,9 +45,6 @@ class Trainer:
         self.epoch_count = checkpoint['epoch_count']
         self.min_test_loss = checkpoint['min_test_loss']
 
-        for param_group in self.optimizer.param_groups:
-            param_group['lr'] = self.learning_rate
-
     def save_checkpoint(self):
         checkpoint = {
             'model_state_dict': self.raw_model.state_dict(),

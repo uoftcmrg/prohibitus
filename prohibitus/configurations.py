@@ -65,8 +65,8 @@ class ABCConfiguration(Configuration):
     batch_size = 256
     grad_norm_clip = 1.0
     decay_learning_rate = True
-    warmup_token_count = 1e6
-    final_token_count = 1e10
+    warmup_token_count = 1e5
+    final_token_count = 1e9
     checkpoint_path = './checkpoints/abc/checkpoint.pt'
 
 
