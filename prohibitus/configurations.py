@@ -29,8 +29,6 @@ class Configuration(ABC):
     warmup_token_count = None
     final_token_count = None
     checkpoint_path = None
-    autosave_path = None
-    autosave_interval = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
@@ -70,8 +68,6 @@ class ABCConfiguration(Configuration):
     warmup_token_count = 1e5
     final_token_count = 1e9
     checkpoint_path = './checkpoints/abc/checkpoint.pt'
-    autosave_path = './checkpoints/abc/autosave.pt'
-    autosave_interval = 1000
 
 
 class MidiConfiguration(Configuration):
@@ -104,5 +100,3 @@ class MidiConfiguration(Configuration):
     warmup_token_count = 1e6
     final_token_count = 1e12
     checkpoint_path = './checkpoints/midi/checkpoint.pt'
-    autosave_path = './checkpoints/midi/autosave.pt'
-    autosave_interval = 1000
