@@ -1,14 +1,12 @@
 from argparse import ArgumentParser
-from random import choices
 
-from torch import cat, long, multinomial, no_grad, tensor, topk
-from torch.nn.functional import softmax
+from torch import cat, long, multinomial, no_grad, tensor
 
 from prohibitus import ABCConfiguration, ABCDataset, ABCModel, ABCTrainer
 
 
 @no_grad()
-def infer(model, context, count, configuration, device, *, k=None):
+def infer(model, context, count, device, configuration):
     x = tensor(
         tuple(map(ord, context)),
         dtype=long,
@@ -18,16 +16,8 @@ def infer(model, context, count, configuration, device, *, k=None):
 
     for _ in range(count):
         input_ = x[:, -configuration.chunk_size:]
-        logits = model(input_)
-        logits = logits[:, -1, :]
-        probabilities = softmax(logits, dim=-1)
-
-        if k is None:
-            y = multinomial(probabilities, num_samples=1)
-        else:
-            values, indices = topk(probabilities[0], k)
-            y = tensor([choices(indices, values)]).to(device)
-
+        probabilities = model(input_)[:, -1, :]
+        y = multinomial(probabilities, num_samples=1)
         x = cat((x, y), dim=1)
 
     completion = ''.join(map(chr, x[0]))
@@ -40,6 +30,8 @@ def main():
         description='Train or infer music generation in abc format',
     )
     parser.add_argument('command', metavar='<command>')
+    parser.add_argument('--filename', metavar='<filename to continue>')
+    parser.add_argument('--count', metavar='<number of generated characters>')
 
     args = parser.parse_args()
 
@@ -52,16 +44,19 @@ def main():
     if args.command == 'train':
         trainer.train()
     elif args.command == 'infer':
-        print(
-            infer(
-                model,
-                'X:40\nL:1/8\nQ:1/4=132\nM:4/4\nI:linebreak $\nK:F\nV:1 treble\nV:2 bass\nL:1/4\nV:1',
-                10000,
-                configuration,
-                trainer.device,
-                k=10,
-            ),
+        with open(args.filename, encoding='utf-8') as file:
+            content = file.read()
+
+        content = infer(
+            model,
+            content,
+            args.count,
+            trainer.device,
+            configuration,
         )
+
+        with open(args.filename, 'w', encoding='utf-8') as file:
+            file.write(content)
     else:
         print(f'unknown command: {args.command}')
 

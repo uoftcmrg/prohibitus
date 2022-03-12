@@ -4,14 +4,15 @@ from os.path import dirname, exists
 
 import numpy as np
 from torch import cuda, load, save, set_grad_enabled
-from torch.nn import DataParallel
-from torch.nn.functional import cross_entropy
+from torch.nn import BCELoss, CrossEntropyLoss, DataParallel
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data.dataloader import DataLoader
 from tqdm import tqdm
 
 
 class Trainer:
+    criterion = None
+
     def __init__(self, model, train_dataset, test_dataset, configuration):
         self.raw_model = model
         self.train_dataset = train_dataset
@@ -106,8 +107,8 @@ class Trainer:
             y = y.to(self.device)
 
             with set_grad_enabled(status):
-                logits = self.model(x)
-                loss = cross_entropy(
+                logits = self.model(x, False)
+                loss = self.criterion(
                     logits.view(-1, logits.size(-1)),
                     y.view(-1),
                 ).mean()
@@ -126,19 +127,16 @@ class Trainer:
                 if self.configuration.decay_learning_rate:
                     self.token_count += (y >= 0).sum()
 
-                    if self.token_count \
-                            < self.configuration.warmup_token_count:
-                        scalar = self.token_count / max(
-                            1,
-                            self.configuration.warmup_token_count,
-                        )
-                    else:
-                        offset = self.configuration.warmup_token_count
-                        progress = (self.token_count - offset) / max(
-                            1,
-                            self.configuration.final_token_count - offset,
-                        )
+                    w = self.configuration.warmup_token_count
+                    f = self.configuration.final_token_count
+
+                    if self.token_count < w:
+                        scalar = self.token_count / max(1, w)
+                    elif w <= self.token_count < f:
+                        progress = (self.token_count - w) / max(1, f - w)
                         scalar = max(0.1, 0.5 * (1 + cos(pi * progress)))
+                    else:
+                        scalar = 0.1
 
                     self.learning_rate = \
                         self.configuration.learning_rate * scalar
@@ -162,8 +160,8 @@ class Trainer:
 
 
 class ABCTrainer(Trainer):
-    ...
+    criterion = CrossEntropyLoss()
 
 
 class MidiTrainer(Trainer):
-    ...
+    criterion = BCELoss()

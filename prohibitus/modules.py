@@ -1,8 +1,9 @@
+from abc import ABC, abstractmethod
 from functools import partial
 from math import inf, sqrt
 from operator import getitem
 
-from torch import ones, tril, zeros
+from torch import ones, sigmoid, softmax, tril, zeros
 from torch.nn import (
     Dropout,
     Embedding,
@@ -13,7 +14,6 @@ from torch.nn import (
     Parameter,
     Sequential,
 )
-from torch.nn.functional import softmax
 from torch.optim import AdamW
 
 
@@ -115,7 +115,9 @@ class Block(ProhibitusModule):
         return x
 
 
-class Model(ProhibitusModule):
+class Model(ProhibitusModule, ABC):
+    token_embedder_cls = None
+
     @staticmethod
     def _setup(module):
         if isinstance(module, (Linear, Embedding)):
@@ -131,7 +133,7 @@ class Model(ProhibitusModule):
         super().__init__(configuration)
 
         # Embedder
-        self.token_embedder = Embedding(
+        self.token_embedder = self.token_embedder_cls(
             configuration.token_count,
             configuration.embedding_size,
         )
@@ -203,7 +205,7 @@ class Model(ProhibitusModule):
 
         return optimizer
 
-    def forward(self, x):
+    def forward(self, x, normalize=True):
         _, chunk_size = x.size()
 
         # Embedder
@@ -218,12 +220,22 @@ class Model(ProhibitusModule):
         x = self.layer_norm(x)
         logits = self.decoder(x)
 
-        return logits
+        return self._normalize(logits) if normalize else logits
+
+    @abstractmethod
+    def _normalize(self, logits):
+        ...
 
 
 class ABCModel(Model):
-    ...
+    token_embedder_cls = Embedding
+
+    def _normalize(self, logits):
+        return softmax(logits, -1)
 
 
 class MidiModel(Model):
-    ...
+    token_embedder_cls = Linear
+
+    def _normalize(self, logits):
+        return sigmoid(logits)

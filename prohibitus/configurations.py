@@ -52,28 +52,50 @@ class ABCConfiguration(Configuration):
     embedding_drop_percentage = 0.1
     token_count = 128
     chunk_size = 128
-    embedding_size = 128
-    feedforward_size = 512
-    head_count = 4
-    layer_count = 4
+    embedding_size = 512
+    feedforward_size = 1024
+    head_count = 8
+    layer_count = 8
 
     # Trainer settings
     learning_rate = 6e-4
     betas = 0.9, 0.95
     weight_decay = 0.1
-    max_epoch_count = 10
-    batch_size = 512
+    max_epoch_count = 20
+    batch_size = 256
     grad_norm_clip = 1.0
     decay_learning_rate = True
-    warmup_token_count = 5e6
-    final_token_count = 1e7
+    warmup_token_count = 1e6
+    final_token_count = 1e10
     checkpoint_path = './checkpoints/abc/checkpoint.pt'
 
 
 class MidiConfiguration(Configuration):
     # Data settings
+    train_pathname = './resources/midi/*.mid'
+    test_pathname = None
+    shuffle_count = 100000
     threshold = 0.01
     framerate = 128
 
+    # Model settings
+    attention_drop_percentage = 0.1
+    residual_drop_percentage = 0.1
+    embedding_drop_percentage = 0.1
+    token_count = 88
+    embedding_size = 512
+    feedforward_size = 1024
+    head_count = 8
+    layer_count = 8
+
     # Trainer settings
-    checkpoint_path = './checkpoints/abc/midi_checkpoint.pt'
+    learning_rate = 6e-4
+    betas = 0.9, 0.95
+    weight_decay = 0.1
+    max_epoch_count = 20
+    batch_size = 256
+    grad_norm_clip = 1.0
+    decay_learning_rate = True
+    warmup_token_count = 1e6
+    final_token_count = 1e12
+    checkpoint_path = './checkpoints/midi/checkpoint.pt'
