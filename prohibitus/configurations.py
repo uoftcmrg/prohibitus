@@ -83,9 +83,9 @@ class MidiConfiguration(Configuration):
     residual_drop_percentage = 0.1
     embedding_drop_percentage = 0.1
     token_count = 12
-    chunk_size = 256
-    embedding_size = 256
-    feedforward_size = 1028
+    chunk_size = 128
+    embedding_size = 512
+    feedforward_size = 1024
     head_count = 8
     layer_count = 8
 

@@ -4,20 +4,20 @@ from os.path import dirname, exists
 
 import numpy as np
 from torch import cuda, load, save, set_grad_enabled
-from torch.nn import BCELoss, CrossEntropyLoss, DataParallel
+from torch.nn import CrossEntropyLoss, DataParallel
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data.dataloader import DataLoader
 from tqdm import tqdm
 
 
 class Trainer:
-    criterion = None
-
     def __init__(self, model, train_dataset, test_dataset, configuration):
         self.raw_model = model
         self.train_dataset = train_dataset
         self.test_dataset = test_dataset
         self.configuration = configuration
+        self.criterion = CrossEntropyLoss()
+
         self.optimizer = model.create_optimizer()
         self.learning_rate = configuration.learning_rate
         self.token_count = 0
@@ -158,8 +158,8 @@ class Trainer:
 
 
 class ABCTrainer(Trainer):
-    criterion = CrossEntropyLoss()
+    ...
 
 
 class MidiTrainer(Trainer):
-    criterion = BCELoss()
+    ...
