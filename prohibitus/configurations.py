@@ -46,7 +46,7 @@ class ABCConfiguration(Configuration):
     # Data settings
     train_pathname = './resources/abc/*.abc'
     test_pathname = None
-    shuffle_count = 100000
+    shuffle_count = 1000000
 
     # Model settings
     attention_drop_percentage = 0.1
@@ -78,7 +78,7 @@ class MidiConfiguration(Configuration):
     # Data settings
     train_pathname = './resources/midi/*.mid'
     test_pathname = None
-    shuffle_count = 100000
+    shuffle_count = 1000000
     threshold = 0.01
     framerate = 128
 
