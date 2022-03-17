@@ -81,9 +81,9 @@ class MidiConfiguration(Configuration):
     # Data settings
     train_dataset_pathname = './resources/midi/train/**/*.mid'
     test_dataset_pathname = './resources/midi/test/**/*.mid'
-    dataset_shuffle_count = 2000000
-    max_train_dataset_size = 400000
-    max_test_dataset_size = 100000
+    dataset_shuffle_count = 5000000
+    max_train_dataset_size = 800000
+    max_test_dataset_size = 200000
 
     # Model settings
     attention_drop_percentage = 0.1
@@ -100,11 +100,11 @@ class MidiConfiguration(Configuration):
     learning_rate = 6e-4
     betas = 0.9, 0.95
     weight_decay = 0.1
-    max_epoch_count = 2
+    max_epoch_count = 500
     batch_size = 256
     grad_norm_clip = 1.0
     decay_learning_rate = True
     warmup_token_count = 1e6
-    final_token_count = 1e12
+    final_token_count = 1e10
     checkpoint_path = './saves/midi/checkpoint.pt'
     autosave_path = './saves/midi/autosave.pt'
