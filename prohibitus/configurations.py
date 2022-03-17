@@ -31,8 +31,8 @@ class Configuration(ABC):
     decay_learning_rate = None
     warmup_token_count = None
     final_token_count = None
-    autosave_path = None
-    checkpoint_path = None
+    autosave_pathname = None
+    checkpoint_pathname = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
@@ -73,8 +73,8 @@ class ABCConfiguration(Configuration):
     decay_learning_rate = True
     warmup_token_count = 1e5
     final_token_count = 1e9
-    autosave_path = './saves/abc/autosave.pt'
-    checkpoint_path = './saves/abc/checkpoint.pt'
+    autosave_pathname = './saves/abc/autosave.pt'
+    checkpoint_pathname = './saves/abc/checkpoint.pt'
 
 
 class MidiConfiguration(Configuration):
@@ -106,5 +106,5 @@ class MidiConfiguration(Configuration):
     decay_learning_rate = True
     warmup_token_count = 1e6
     final_token_count = 1e10
-    autosave_path = './saves/midi/autosave.pt'
-    checkpoint_path = './saves/midi/checkpoint.pt'
+    autosave_pathname = './saves/midi/autosave.pt'
+    checkpoint_pathname = './saves/midi/checkpoint.pt'

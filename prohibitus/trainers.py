@@ -31,17 +31,17 @@ class Trainer:
             self.device = 'cpu'
             self.model = self.raw_model
 
-        if configuration.checkpoint_path is not None \
-                and exists(configuration.checkpoint_path):
+        if configuration.checkpoint_pathname is not None \
+                and exists(configuration.checkpoint_pathname):
             self.load(True)
 
     def load(self, status):
         if status:
-            path = self.configuration.checkpoint_path
+            pathname = self.configuration.checkpoint_pathname
         else:
-            path = self.configuration.autosave_path
+            pathname = self.configuration.autosave_pathname
 
-        checkpoint = load(path)
+        checkpoint = load(pathname)
 
         self.raw_model.load_state_dict(checkpoint['model_state_dict'])
         self.optimizer.load_state_dict(checkpoint['optimizer'])
@@ -61,26 +61,26 @@ class Trainer:
         }
 
         if status:
-            path = self.configuration.checkpoint_path
+            pathname = self.configuration.checkpoint_pathname
         else:
-            path = self.configuration.autosave_path
+            pathname = self.configuration.autosave_pathname
 
-        dirname_ = dirname(path)
+        dirname_ = dirname(pathname)
 
         if not exists(dirname_):
             makedirs(dirname_)
 
-        save(checkpoint, path)
+        save(checkpoint, pathname)
 
     def train(self):
-        if self.configuration.autosave_path is not None:
-            if exists(self.configuration.autosave_path):
+        if self.configuration.autosave_pathname is not None:
+            if exists(self.configuration.autosave_pathname):
                 self.load(False)
             else:
                 self.save(False)
 
-        if self.configuration.checkpoint_path is not None \
-                and not exists(self.configuration.checkpoint_path):
+        if self.configuration.checkpoint_pathname is not None \
+                and not exists(self.configuration.checkpoint_pathname):
             self.save(True)
 
         while self.epoch_count < self.configuration.max_epoch_count:
@@ -93,10 +93,10 @@ class Trainer:
 
             self.epoch_count += 1
 
-            if self.configuration.autosave_path is not None:
+            if self.configuration.autosave_pathname is not None:
                 self.save(False)
 
-            if self.configuration.checkpoint_path is not None \
+            if self.configuration.checkpoint_pathname is not None \
                     and (test_loss is None or test_loss < self.min_test_loss):
                 self.min_test_loss = test_loss
                 self.save(True)
