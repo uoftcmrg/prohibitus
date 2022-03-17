@@ -38,7 +38,7 @@ def infer(model, context, count, device, configuration):
 
 def main():
     parser = ArgumentParser(
-        description='Train or infer music generation in abc format',
+        description='Train or infer music generation in midi format',
     )
     parser.add_argument('command', metavar='<command>')
     parser.add_argument('--filename', metavar='<filename to continue>')
