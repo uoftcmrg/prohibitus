@@ -1,11 +1,14 @@
 from abc import ABC
+from math import inf
 
 
 class Configuration(ABC):
     # Data settings
-    train_pathname = None
-    test_pathname = None
-    shuffle_count = None
+    train_dataset_pathname = None
+    test_dataset_pathname = None
+    dataset_shuffle_count = None
+    max_train_dataset_size = None
+    max_test_dataset_size = None
 
     # Model settings
     attention_drop_percentage = None
@@ -29,6 +32,7 @@ class Configuration(ABC):
     warmup_token_count = None
     final_token_count = None
     checkpoint_path = None
+    autosave_path = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
@@ -42,9 +46,11 @@ class Configuration(ABC):
 
 class ABCConfiguration(Configuration):
     # Data settings
-    train_pathname = './resources/abc/*.abc'
-    test_pathname = None
-    shuffle_count = 1000000
+    train_dataset_pathname = './resources/abc/*.abc'
+    test_dataset_pathname = None
+    dataset_shuffle_count = 1000000
+    max_train_dataset_size = inf
+    max_test_dataset_size = inf
 
     # Model settings
     attention_drop_percentage = 0.1
@@ -67,16 +73,17 @@ class ABCConfiguration(Configuration):
     decay_learning_rate = True
     warmup_token_count = 1e5
     final_token_count = 1e9
-    checkpoint_path = './checkpoints/abc/checkpoint.pt'
+    checkpoint_path = './saves/abc/checkpoint.pt'
+    autosave_path = './saves/abc/autosave.pt'
 
 
 class MidiConfiguration(Configuration):
     # Data settings
-    train_pathname = './resources/midi/train/**/*.mid'
-    test_pathname = './resources/midi/test/**/*.mid'
-    shuffle_count = 1000000
-    threshold = 0.01
-    framerate = 128
+    train_dataset_pathname = './resources/midi/train/**/*.mid'
+    test_dataset_pathname = './resources/midi/test/**/*.mid'
+    dataset_shuffle_count = 2000000
+    max_train_dataset_size = 400000
+    max_test_dataset_size = 100000
 
     # Model settings
     attention_drop_percentage = 0.1
@@ -99,4 +106,5 @@ class MidiConfiguration(Configuration):
     decay_learning_rate = True
     warmup_token_count = 1e6
     final_token_count = 1e12
-    checkpoint_path = './checkpoints/midi/checkpoint.pt'
+    checkpoint_path = './saves/midi/checkpoint.pt'
+    autosave_path = './saves/midi/autosave.pt'

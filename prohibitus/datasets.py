@@ -15,9 +15,11 @@ from prohibitus.utilities import load_pro
 class Dataset(IterableDataset, ABC):
     def __init__(self, status, configuration):
         if status:
-            self.pathname = configuration.train_pathname
+            self.pathname = configuration.train_dataset_pathname
+            self.max_dataset_size = configuration.max_train_dataset_size
         else:
-            self.pathname = configuration.test_pathname
+            self.pathname = configuration.test_dataset_pathname
+            self.max_dataset_size = configuration.max_test_dataset_size
 
         self.configuration = configuration
 
@@ -26,13 +28,28 @@ class Dataset(IterableDataset, ABC):
         shuffle(matches)
 
         iterable = chain.from_iterable(map(self._sub_iter, matches))
-        batch = None
+        count = 0
 
-        while batch or batch is None:
-            batch = list(islice(iterable, self.configuration.shuffle_count))
+        while count < self.max_dataset_size:
+            batch = list(
+                islice(
+                    iterable,
+                    min(
+                        self.max_dataset_size - count,
+                        self.configuration.dataset_shuffle_count,
+                    ),
+                ),
+            )
+
+            if not batch:
+                return
+
+            count += len(batch)
             shuffle(batch)
-
             yield from batch
+
+    def __len__(self):
+        return self.max_dataset_size
 
     @abstractmethod
     def _sub_iter(self, filename):
@@ -62,7 +79,7 @@ class ABCDataset(Dataset):
             if not 0 <= char < self.configuration.token_count:
                 chars[i] = 0
 
-        yield from self._sub_iter_aux(chars)
+        return self._sub_iter_aux(chars)
 
 
 class MidiDataset(Dataset):
@@ -84,4 +101,4 @@ class MidiDataset(Dataset):
     def _sub_iter(self, filename):
         pro = tuple(map(partial(getitem, self.indices), load_pro(filename)))
 
-        yield from self._sub_iter_aux(pro)
+        return self._sub_iter_aux(pro)
