@@ -156,7 +156,7 @@ class Model(ProhibitusModule):
 
     def create_optimizer(self):
         decay = set()
-        no_decay = {'positional_embedder'}
+        no_decay = {'positional_embedding'}
 
         whitelist = Linear,
         blacklist = LayerNorm, Embedding
