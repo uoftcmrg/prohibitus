@@ -4,10 +4,10 @@ from math import inf
 
 class Configuration(ABC):
     # Data settings
-    train_dataset_pathname = None
+    training_dataset_pathname = None
     test_dataset_pathname = None
     dataset_shuffle_count = None
-    max_train_dataset_size = None
+    max_training_dataset_size = None
     max_test_dataset_size = None
 
     # Model settings
@@ -46,10 +46,10 @@ class Configuration(ABC):
 
 class ABCConfiguration(Configuration):
     # Data settings
-    train_dataset_pathname = './resources/abc/*.abc'
+    training_dataset_pathname = './resources/abc/*.abc'
     test_dataset_pathname = None
     dataset_shuffle_count = 1000000
-    max_train_dataset_size = inf
+    max_training_dataset_size = inf
     max_test_dataset_size = inf
 
     # Model settings
@@ -79,10 +79,10 @@ class ABCConfiguration(Configuration):
 
 class MidiConfiguration(Configuration):
     # Data settings
-    train_dataset_pathname = './resources/midi/train/**/*.mid'
+    training_dataset_pathname = './resources/midi/training/**/*.mid'
     test_dataset_pathname = './resources/midi/test/**/*.mid'
     dataset_shuffle_count = 5000000
-    max_train_dataset_size = 800000
+    max_training_dataset_size = 800000
     max_test_dataset_size = 200000
 
     # Model settings

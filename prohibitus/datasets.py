@@ -15,8 +15,8 @@ from prohibitus.utilities import load_pro
 class Dataset(IterableDataset, ABC):
     def __init__(self, status, configuration):
         if status:
-            self.pathname = configuration.train_dataset_pathname
-            self.max_dataset_size = configuration.max_train_dataset_size
+            self.pathname = configuration.training_dataset_pathname
+            self.max_dataset_size = configuration.max_training_dataset_size
         else:
             self.pathname = configuration.test_dataset_pathname
             self.max_dataset_size = configuration.max_test_dataset_size

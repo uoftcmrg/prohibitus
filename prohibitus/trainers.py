@@ -11,9 +11,9 @@ from tqdm import tqdm
 
 
 class Trainer:
-    def __init__(self, model, train_dataset, test_dataset, configuration):
+    def __init__(self, model, training_dataset, test_dataset, configuration):
         self.raw_model = model
-        self.train_dataset = train_dataset
+        self.training_dataset = training_dataset
         self.test_dataset = test_dataset
         self.configuration = configuration
         self.criterion = CrossEntropyLoss()
@@ -45,7 +45,7 @@ class Trainer:
         self.epoch_count = checkpoint['epoch_count']
         self.min_test_loss = checkpoint['min_test_loss']
 
-    def save_checkpoint(self):
+    def save(self, status):
         checkpoint = {
             'model_state_dict': self.raw_model.state_dict(),
             'optimizer': self.optimizer.state_dict(),
@@ -55,17 +55,22 @@ class Trainer:
             'min_test_loss': self.min_test_loss,
         }
 
-        dirname_ = dirname(self.configuration.checkpoint_path)
+        if status:
+            path = self.configuration.checkpoint_path
+        else:
+            path = self.configuration.autosave_path
+
+        dirname_ = dirname(path)
 
         if not exists(dirname_):
             makedirs(dirname_)
 
-        save(checkpoint, self.configuration.checkpoint_path)
+        save(checkpoint, path)
 
     def train(self):
         if self.configuration.checkpoint_path is not None \
                 and not exists(self.configuration.checkpoint_path):
-            self.save_checkpoint()
+            self.save(True)
 
         while self.epoch_count < self.configuration.max_epoch_count:
             self._run_epoch(True)
@@ -77,17 +82,19 @@ class Trainer:
 
             self.epoch_count += 1
 
+            self.save(False)
+
             if self.configuration.checkpoint_path is not None \
                     and (test_loss is None or test_loss < self.min_test_loss):
                 self.min_test_loss = test_loss
-                self.save_checkpoint()
+                self.save(True)
 
     def _run_epoch(self, status):
         self.model.train(status)
 
         if status:
-            label = 'Train'
-            dataset = self.train_dataset
+            label = 'Training'
+            dataset = self.training_dataset
         else:
             label = 'Test'
             dataset = self.test_dataset
