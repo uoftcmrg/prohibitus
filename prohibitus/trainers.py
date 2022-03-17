@@ -33,10 +33,15 @@ class Trainer:
 
         if configuration.checkpoint_path is not None \
                 and exists(configuration.checkpoint_path):
-            self.load_checkpoint()
+            self.load(True)
 
-    def load_checkpoint(self):
-        checkpoint = load(self.configuration.checkpoint_path)
+    def load(self, status):
+        if status:
+            path = self.configuration.checkpoint_path
+        else:
+            path = self.configuration.autosave_path
+
+        checkpoint = load(path)
 
         self.raw_model.load_state_dict(checkpoint['model_state_dict'])
         self.optimizer.load_state_dict(checkpoint['optimizer'])
@@ -68,6 +73,12 @@ class Trainer:
         save(checkpoint, path)
 
     def train(self):
+        if self.configuration.autosave_path is not None:
+            if exists(self.configuration.autosave_path):
+                self.load(False)
+            else:
+                self.save(False)
+
         if self.configuration.checkpoint_path is not None \
                 and not exists(self.configuration.checkpoint_path):
             self.save(True)
@@ -82,7 +93,8 @@ class Trainer:
 
             self.epoch_count += 1
 
-            self.save(False)
+            if self.configuration.autosave_path is not None:
+                self.save(False)
 
             if self.configuration.checkpoint_path is not None \
                     and (test_loss is None or test_loss < self.min_test_loss):
