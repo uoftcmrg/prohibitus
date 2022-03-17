@@ -28,16 +28,16 @@ class CausalSelfAttention(ProhibitusModule):
         super().__init__(configuration)
 
         self.key = Linear(
-            configuration.embedding_size,
-            configuration.embedding_size,
+            configuration.embedding_dim,
+            configuration.embedding_dim,
         )
         self.query = Linear(
-            configuration.embedding_size,
-            configuration.embedding_size,
+            configuration.embedding_dim,
+            configuration.embedding_dim,
         )
         self.value = Linear(
-            configuration.embedding_size,
-            configuration.embedding_size,
+            configuration.embedding_dim,
+            configuration.embedding_dim,
         )
 
         self.attention_dropout = Dropout(
@@ -48,8 +48,8 @@ class CausalSelfAttention(ProhibitusModule):
         )
 
         self.projector = Linear(
-            configuration.embedding_size,
-            configuration.embedding_size,
+            configuration.embedding_dim,
+            configuration.embedding_dim,
         )
 
         self.register_buffer(
@@ -60,19 +60,19 @@ class CausalSelfAttention(ProhibitusModule):
         )
 
     def forward(self, x):
-        batch_size, chunk_size, embedding_size = x.size()
+        batch_size, chunk_size, embedding_dim = x.size()
         dimensions = (
             batch_size,
             chunk_size,
             self.configuration.head_count,
-            embedding_size // self.configuration.head_count,
+            embedding_dim // self.configuration.head_count,
         )
 
         key = self.key(x).view(dimensions).transpose(1, 2)
         query = self.query(x).view(dimensions).transpose(1, 2)
         value = self.value(x).view(dimensions).transpose(1, 2)
 
-        attention = (query @ key.transpose(-2, -1)) / sqrt(embedding_size)
+        attention = (query @ key.transpose(-2, -1)) / sqrt(embedding_dim)
         attention = attention.masked_fill(
             self.mask[:, :, :chunk_size, :chunk_size] == 0,
             -inf,
@@ -91,18 +91,18 @@ class Block(ProhibitusModule):
     def __init__(self, configuration):
         super().__init__(configuration)
 
-        self.layer_norm_1 = LayerNorm(configuration.embedding_size)
-        self.layer_norm_2 = LayerNorm(configuration.embedding_size)
+        self.layer_norm_1 = LayerNorm(configuration.embedding_dim)
+        self.layer_norm_2 = LayerNorm(configuration.embedding_dim)
         self.attention = CausalSelfAttention(configuration)
         self.multilayer_perceptron = Sequential(
             Linear(
-                configuration.embedding_size,
-                configuration.feedforward_size,
+                configuration.embedding_dim,
+                configuration.feedforward_dim,
             ),
             GELU(),
             Linear(
-                configuration.feedforward_size,
-                configuration.embedding_size,
+                configuration.feedforward_dim,
+                configuration.embedding_dim,
             ),
             Dropout(configuration.residual_drop_percentage),
         )
@@ -132,10 +132,10 @@ class Model(ProhibitusModule):
         # Embedder
         self.token_embedding = Embedding(
             configuration.token_count,
-            configuration.embedding_size,
+            configuration.embedding_dim,
         )
         self.positional_embedding = Parameter(
-            zeros(1, configuration.chunk_size, configuration.embedding_size),
+            zeros(1, configuration.chunk_size, configuration.embedding_dim),
         )
         self.dropout = Dropout(configuration.embedding_drop_percentage)
 
@@ -145,9 +145,9 @@ class Model(ProhibitusModule):
         )
 
         # Decoder
-        self.layer_norm = LayerNorm(configuration.embedding_size)
+        self.layer_norm = LayerNorm(configuration.embedding_dim)
         self.decoder = Linear(
-            configuration.embedding_size,
+            configuration.embedding_dim,
             configuration.token_count,
             bias=False,
         )

@@ -16,8 +16,8 @@ class Configuration(ABC):
     embedding_drop_percentage = None
     token_count = None
     chunk_size = None
-    embedding_size = None
-    feedforward_size = None
+    embedding_dim = None
+    feedforward_dim = None
     head_count = None
     layer_count = None
 
@@ -41,7 +41,7 @@ class Configuration(ABC):
             else:
                 raise ValueError(f'Unknown attribute: {key}')
 
-        assert self.embedding_size % self.head_count == 0
+        assert self.embedding_dim % self.head_count == 0
 
 
 class ABCConfiguration(Configuration):
@@ -58,8 +58,8 @@ class ABCConfiguration(Configuration):
     embedding_drop_percentage = 0.1
     token_count = 128
     chunk_size = 128
-    embedding_size = 512
-    feedforward_size = 1024
+    embedding_dim = 512
+    feedforward_dim = 1024
     head_count = 8
     layer_count = 8
 
@@ -91,8 +91,8 @@ class MidiConfiguration(Configuration):
     embedding_drop_percentage = 0.1
     token_count = 12
     chunk_size = 128
-    embedding_size = 512
-    feedforward_size = 1024
+    embedding_dim = 512
+    feedforward_dim = 1024
     head_count = 8
     layer_count = 8
 
