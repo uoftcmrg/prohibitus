@@ -47,7 +47,7 @@ class CausalSelfAttention(ProhibitusModule):
             configuration.residual_drop_percentage,
         )
 
-        self.project = Linear(
+        self.projector = Linear(
             configuration.embedding_size,
             configuration.embedding_size,
         )
@@ -82,7 +82,7 @@ class CausalSelfAttention(ProhibitusModule):
 
         y = attention @ value
         y = y.transpose(1, 2).contiguous().view(*x.size())
-        y = self.residual_dropout(self.project(y))
+        y = self.residual_dropout(self.projector(y))
 
         return y
 
@@ -130,11 +130,11 @@ class Model(ProhibitusModule):
         super().__init__(configuration)
 
         # Embedder
-        self.token_embedder = Embedding(
+        self.token_embedding = Embedding(
             configuration.token_count,
             configuration.embedding_size,
         )
-        self.positional_embedder = Parameter(
+        self.positional_embedding = Parameter(
             zeros(1, configuration.chunk_size, configuration.embedding_size),
         )
         self.dropout = Dropout(configuration.embedding_drop_percentage)
@@ -206,8 +206,8 @@ class Model(ProhibitusModule):
         _, chunk_size = x.size()
 
         # Embedder
-        token_embeddings = self.token_embedder(x)
-        position_embeddings = self.positional_embedder[:, :chunk_size, :]
+        token_embeddings = self.token_embedding(x)
+        position_embeddings = self.positional_embedding[:, :chunk_size, :]
         x = self.dropout(token_embeddings + position_embeddings)
 
         # Transformer
