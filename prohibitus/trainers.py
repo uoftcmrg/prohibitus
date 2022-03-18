@@ -17,7 +17,6 @@ class Trainer:
         self.test_dataset = test_dataset
         self.configuration = configuration
         self.criterion = CrossEntropyLoss()
-
         self.optimizer = model.create_optimizer()
         self.learning_rate = configuration.learning_rate
         self.token_count = 0
