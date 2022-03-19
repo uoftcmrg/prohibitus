@@ -161,15 +161,15 @@ class Trainer:
                         param_group['lr'] = self.learning_rate
 
             progress_bar.set_description(
-                f'Epoch {self.epoch_count} | {label} loss: {loss.item():.5f}'
-                f', Learning rate: {self.learning_rate:e}',
+                f'Epoch {self.epoch_count} | {label} loss: {loss.item():.5f}, '
+                f'Learning rate: {self.learning_rate:e}',
             )
 
         loss = np.mean(losses)
 
         progress_bar.set_description(
-            f'Epoch {self.epoch_count} | {label} loss: {loss:.5f}'
-            f', Learning rate: {self.learning_rate:e}',
+            f'Epoch {self.epoch_count} | {label} loss: {loss:.5f}, '
+            f'Learning rate: {self.learning_rate:e}',
         )
 
         return loss

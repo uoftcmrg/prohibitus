@@ -80,7 +80,7 @@ class ABCConfiguration(Configuration):
 class MidiConfiguration(Configuration):
     # Data settings
     training_dataset_pathname = './resources/midi/training/**/*.mid'
-    test_dataset_pathname = './resources/midi/test/**/*.mid'
+    test_dataset_pathname = './resources/midi/training/**/*.mid'
     dataset_shuffle_count = 5000000
     max_training_dataset_size = 800000
     max_test_dataset_size = 200000
