@@ -161,7 +161,7 @@ class Trainer:
                         param_group['lr'] = self.learning_rate
 
             progress_bar.set_description(
-                f'Epoch {self.epoch_count} | {label} loss: {loss.item():.5f}, '
+                f'Epoch {self.epoch_count} | {label} loss: {losses[-1]:.5f}, '
                 f'Learning rate: {self.learning_rate:e}',
             )
 
