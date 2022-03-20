@@ -129,7 +129,7 @@ class Trainer:
                     y.view(-1),
                 ).mean()
 
-                losses.append(float(loss.item()))
+                losses.append(loss.item())
 
             if status:
                 self.model.zero_grad()
