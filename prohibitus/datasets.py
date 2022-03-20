@@ -30,23 +30,21 @@ class Dataset(IterableDataset, ABC):
         iterable = chain.from_iterable(map(self._sub_iter, matches))
         count = 0
 
-        while count < self.max_dataset_size:
+        while self.max_dataset_size is None or count < self.max_dataset_size:
             batch = list(
-                islice(
-                    iterable,
-                    min(
-                        self.max_dataset_size - count,
-                        self.configuration.dataset_shuffle_count,
-                    ),
-                ),
+                islice(iterable, self.configuration.dataset_shuffle_count),
             )
 
             if not batch:
                 return
 
-            count += len(batch)
             shuffle(batch)
+
+            if self.max_dataset_size is not None:
+                batch = batch[:self.max_dataset_size - count]
+
             yield from batch
+            count += len(batch)
 
     def __len__(self):
         return self.max_dataset_size
