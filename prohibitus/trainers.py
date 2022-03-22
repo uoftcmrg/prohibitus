@@ -22,6 +22,8 @@ class Trainer:
         self.token_count = 0
         self.epoch_count = 0
         self.min_test_loss = inf
+        self.training_losses = []
+        self.test_losses = []
 
         if cuda.is_available():
             self.device = cuda.current_device()
@@ -48,6 +50,8 @@ class Trainer:
         self.token_count = checkpoint['token_count']
         self.epoch_count = checkpoint['epoch_count']
         self.min_test_loss = checkpoint['min_test_loss']
+        self.training_losses = checkpoint['training_losses']
+        self.test_losses = checkpoint['test_losses']
 
     def save(self, status):
         checkpoint = {
@@ -57,6 +61,8 @@ class Trainer:
             'token_count': self.token_count,
             'epoch_count': self.epoch_count,
             'min_test_loss': self.min_test_loss,
+            'training_losses': self.training_losses,
+            'test_losses': self.test_losses,
         }
 
         if status:
@@ -83,7 +89,7 @@ class Trainer:
             self.save(True)
 
         while self.epoch_count < self.configuration.max_epoch_count:
-            self._run_epoch(True)
+            training_loss = self._run_epoch(True)
 
             if self.test_dataset is None:
                 test_loss = None
@@ -91,6 +97,8 @@ class Trainer:
                 test_loss = self._run_epoch(False)
 
             self.epoch_count += 1
+            self.training_losses.append(training_loss)
+            self.test_losses.append(test_loss)
 
             if self.configuration.autosave_pathname is not None:
                 self.save(False)

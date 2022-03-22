@@ -101,8 +101,8 @@ class MidiConfiguration(Configuration):
     token_count = \
         1 + len(delays) + len(pitches) + len(velocities) + len(durations)
     chunk_size = 384
-    embedding_dim = 256
-    feedforward_dim = 768
+    embedding_dim = 512
+    feedforward_dim = 2048
     head_count = 8
     layer_count = 8
 
@@ -111,7 +111,7 @@ class MidiConfiguration(Configuration):
     betas = 0.9, 0.95
     weight_decay = 0.1
     max_epoch_count = 10000
-    batch_size = 32
+    batch_size = 42
     grad_norm_clip = 1.0
     decay_learning_rate = True
     warmup_token_count = 1e6
