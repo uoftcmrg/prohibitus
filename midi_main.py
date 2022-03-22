@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from torch import empty, long, multinomial, no_grad, tensor
+from torch import empty, long, multinomial, no_grad, softmax, tensor
 
 from prohibitus import (
     MidiConfiguration,
@@ -21,7 +21,13 @@ def infer(model, context, count, device, configuration):
 
     for i in range(len(context), len(context) + count):
         input_ = x[:, max(0, i - configuration.chunk_size):i]
-        probabilities = model(input_)[:, -1, :]
+        logits = model(input_)[:, -1, :]
+
+        if configuration.temperature is not None:
+            logits /= configuration.temperature
+
+        probabilities = softmax(logits, -1)
+
         y = multinomial(probabilities, num_samples=1)
         x[:, i:i + 1] = y
 

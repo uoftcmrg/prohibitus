@@ -131,7 +131,7 @@ class Trainer:
             y = y.to(self.device)
 
             with set_grad_enabled(status):
-                logits = self.model(x, False)
+                logits = self.model(x)
                 loss = self.criterion(
                     logits.view(-1, logits.size(-1)),
                     y.view(-1),

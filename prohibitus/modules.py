@@ -202,7 +202,7 @@ class Model(ProhibitusModule):
 
         return optimizer
 
-    def forward(self, x, normalize=True):
+    def forward(self, x):
         _, chunk_size = x.size()
 
         # Embedder
@@ -217,7 +217,7 @@ class Model(ProhibitusModule):
         x = self.layer_norm(x)
         logits = self.decoder(x)
 
-        return softmax(logits, -1) if normalize else logits
+        return logits
 
 
 class ABCModel(Model):

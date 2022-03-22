@@ -34,6 +34,9 @@ class Configuration(ABC):
     autosave_pathname = None
     checkpoint_pathname = None
 
+    # Inference settings
+    temperature = None
+
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             if hasattr(self, key):
@@ -77,6 +80,9 @@ class ABCConfiguration(Configuration):
     autosave_pathname = './saves/abc/autosave.pt'
     checkpoint_pathname = './saves/abc/checkpoint.pt'
 
+    # Inference settings
+    temperature = 1
+
 
 class MidiConfiguration(Configuration):
     # Data settings
@@ -118,3 +124,6 @@ class MidiConfiguration(Configuration):
     final_token_count = 1e10
     autosave_pathname = './saves/midi/autosave.pt'
     checkpoint_pathname = './saves/midi/checkpoint.pt'
+
+    # Inference settings
+    temperature = 2
