@@ -1,4 +1,4 @@
-from functools import partial
+from functools import cache, partial
 from itertools import filterfalse
 from operator import getitem
 
@@ -46,6 +46,7 @@ def semipro_to_note(semipro, time, configuration):
     return note
 
 
+@cache
 def load_pro(midi_file, configuration):
     try:
         pm = PrettyMIDI(midi_file)
