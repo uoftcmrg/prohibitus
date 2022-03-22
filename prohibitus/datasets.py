@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
-from functools import partial
 from glob import glob
 from itertools import chain, islice
-from operator import getitem
 from random import shuffle
 
 from numpy.lib.stride_tricks import sliding_window_view
@@ -16,9 +14,11 @@ class Dataset(IterableDataset, ABC):
     def __init__(self, status, configuration):
         if status:
             self.pathname = configuration.training_dataset_pathname
+            self.shuffle_count = configuration.training_dataset_shuffle_count
             self.max_dataset_size = configuration.max_training_dataset_size
         else:
             self.pathname = configuration.test_dataset_pathname
+            self.shuffle_count = configuration.test_dataset_shuffle_count
             self.max_dataset_size = configuration.max_test_dataset_size
 
         self.configuration = configuration
@@ -31,9 +31,7 @@ class Dataset(IterableDataset, ABC):
         count = 0
 
         while self.max_dataset_size is None or count < self.max_dataset_size:
-            batch = list(
-                islice(iterable, self.configuration.dataset_shuffle_count),
-            )
+            batch = list(islice(iterable, self.shuffle_count))
 
             if not batch:
                 return
@@ -81,22 +79,7 @@ class ABCDataset(Dataset):
 
 
 class MidiDataset(Dataset):
-    indices = {
-        '0': 0,
-        '1': 1,
-        '2': 2,
-        '3': 3,
-        '4': 4,
-        '5': 5,
-        '6': 6,
-        '7': 7,
-        '8': 8,
-        '9': 9,
-        ' ': 10,
-        '\n': 11,
-    }
-
     def _sub_iter(self, filename):
-        pro = tuple(map(partial(getitem, self.indices), load_pro(filename)))
+        pro = load_pro(filename, self.configuration)
 
         return self._sub_iter_aux(pro)

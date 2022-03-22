@@ -14,12 +14,12 @@ __all__ = (
     'ABCTrainer',
     'MidiTrainer',
     'Trainer',
-    'int_to_reversed_str',
+    'index_to_seconds',
     'load_pro',
-    'reversed_str_milliseconds_to_seconds',
-    'reversed_str_to_int',
+    'note_to_semipro',
     'save_pro',
-    'seconds_to_reversed_str_milliseconds',
+    'seconds_to_index',
+    'semipro_to_note',
     'trim_midi',
 )
 
@@ -39,11 +39,11 @@ from prohibitus.modules import (
 )
 from prohibitus.trainers import ABCTrainer, MidiTrainer, Trainer
 from prohibitus.utilities import (
-    int_to_reversed_str,
+    index_to_seconds,
     load_pro,
-    reversed_str_milliseconds_to_seconds,
-    reversed_str_to_int,
+    note_to_semipro,
     save_pro,
-    seconds_to_reversed_str_milliseconds,
+    seconds_to_index,
+    semipro_to_note,
     trim_midi,
 )

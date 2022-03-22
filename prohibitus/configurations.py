@@ -6,7 +6,8 @@ class Configuration(ABC):
     # Data settings
     training_dataset_pathname = None
     test_dataset_pathname = None
-    dataset_shuffle_count = None
+    training_dataset_shuffle_count = 1000000
+    test_dataset_shuffle_count = 100000
     max_training_dataset_size = None
     max_test_dataset_size = None
 
@@ -48,7 +49,8 @@ class ABCConfiguration(Configuration):
     # Data settings
     training_dataset_pathname = './resources/abc/*.abc'
     test_dataset_pathname = None
-    dataset_shuffle_count = 1000000
+    training_dataset_shuffle_count = 1000000
+    test_dataset_shuffle_count = 1000000
     max_training_dataset_size = inf
     max_test_dataset_size = inf
 
@@ -81,18 +83,27 @@ class MidiConfiguration(Configuration):
     # Data settings
     training_dataset_pathname = './resources/midi/training/**/*.mid'
     test_dataset_pathname = './resources/midi/test/**/*.mid'
-    dataset_shuffle_count = 5000000
-    max_training_dataset_size = 800000
-    max_test_dataset_size = 200000
+    training_dataset_shuffle_count = 1000000
+    test_dataset_shuffle_count = 100000
+    max_training_dataset_size = 100000
+    max_test_dataset_size = 10000
+
+    null = 0
+    delays = range(1, 1 + 4096)
+    pitches = range(delays.stop, delays.stop + 128)
+    velocities = range(pitches.stop, pitches.stop + 128)
+    durations = range(velocities.stop, velocities.stop + 4096)
+    time_power = 1.15
 
     # Model settings
     attention_drop_percentage = 0.1
     residual_drop_percentage = 0.1
     embedding_drop_percentage = 0.1
-    token_count = 12
-    chunk_size = 128
-    embedding_dim = 512
-    feedforward_dim = 1024
+    token_count = \
+        1 + len(delays) + len(pitches) + len(velocities) + len(durations)
+    chunk_size = 384
+    embedding_dim = 256
+    feedforward_dim = 768
     head_count = 8
     layer_count = 8
 
@@ -101,7 +112,7 @@ class MidiConfiguration(Configuration):
     betas = 0.9, 0.95
     weight_decay = 0.1
     max_epoch_count = 500
-    batch_size = 256
+    batch_size = 32
     grad_norm_clip = 1.0
     decay_learning_rate = True
     warmup_token_count = 1e6

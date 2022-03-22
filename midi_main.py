@@ -1,8 +1,6 @@
 from argparse import ArgumentParser
-from functools import partial
-from operator import getitem
 
-from torch import cat, long, multinomial, no_grad, tensor
+from torch import empty, multinomial, no_grad
 
 from prohibitus import (
     MidiConfiguration,
@@ -16,24 +14,18 @@ from prohibitus import (
 
 @no_grad()
 def infer(model, context, count, device, configuration):
-    x = tensor(
-        tuple(map(partial(getitem, MidiDataset.indices), context)),
-        dtype=long,
-    ).unsqueeze(0).to(device)
+    x = empty(1, len(context) + count).to(device)
+    x[0, :len(context)] = context
 
     model.eval()
 
-    for _ in range(count):
-        input_ = x[:, -configuration.chunk_size:]
+    for i in range(len(context), len(context) + count):
+        input_ = x[:, max(0, i - configuration.chunk_size):i]
         probabilities = model(input_)[:, -1, :]
         y = multinomial(probabilities, num_samples=1)
-        x = cat((x, y), dim=1)
+        x[:, i:i + 1] = y
 
-    lookup = dict(map(reversed, MidiDataset.indices.items()))
-
-    completion = ''.join(map(partial(getitem, lookup), map(int, x[0])))
-
-    return completion
+    return x.tolist()
 
 
 def main():
@@ -59,7 +51,7 @@ def main():
     if args.command == 'train':
         trainer.train()
     elif args.command == 'infer':
-        pro = load_pro(args.filename)
+        pro = load_pro(args.filename, configuration)
 
         pro = infer(
             model,
@@ -69,7 +61,7 @@ def main():
             configuration,
         )
 
-        save_pro(pro, args.filename)
+        save_pro(pro, args.filename, configuration)
     else:
         print(f'unknown command: {args.command}')
 

@@ -1,28 +1,56 @@
-import numpy as np
+from functools import partial
+from itertools import filterfalse
+from operator import getitem
+
 from pretty_midi import Instrument, Note, PrettyMIDI
 
 
-def int_to_reversed_str(value):
-    return ''.join(reversed(str(value)))
+def seconds_to_index(time, configuration):
+    return round((time * 1000) ** (1 / configuration.time_power))
 
 
-def reversed_str_to_int(value):
-    return int(''.join(reversed(value)))
+def index_to_seconds(index, configuration):
+    return (index ** configuration.time_power) / 1000
 
 
-def seconds_to_reversed_str_milliseconds(value):
-    return int_to_reversed_str(int(value * 1000))
+def note_to_semipro(note, time, configuration):
+    index = seconds_to_index(note.start - time, configuration)
+    delay = configuration.delays[min(index, len(configuration.delays) - 1)]
+
+    pitch = configuration.pitches[note.pitch]
+    velocity = configuration.velocities[note.velocity]
+
+    index = seconds_to_index(note.duration, configuration)
+    duration = \
+        configuration.durations[min(index, len(configuration.durations) - 1)]
+
+    tokens = configuration.null, delay, pitch, velocity, duration
+
+    return tokens
 
 
-def reversed_str_milliseconds_to_seconds(value):
-    return reversed_str_to_int(value) / 1000
+def semipro_to_note(semipro, time, configuration):
+    _, delay, pitch, velocity, duration = semipro
+
+    index = configuration.delays.index(delay)
+    delay = index_to_seconds(index, configuration)
+
+    pitch = configuration.pitches.index(pitch)
+    velocity = configuration.velocities.index(velocity)
+
+    index = configuration.durations.index(duration)
+    duration = index_to_seconds(index, configuration)
+
+    note = Note(velocity, pitch, time + delay, time + delay + duration)
+
+    return note
 
 
-def load_pro(midi_file):
+def load_pro(midi_file, configuration):
     try:
         pm = PrettyMIDI(midi_file)
     except Exception:
-        return ''
+        return []
 
     notes = []
 
@@ -33,45 +61,34 @@ def load_pro(midi_file):
         key=lambda note: (note.start, note.pitch, note.velocity, note.end),
     )
 
-    lines = []
+    tokens = []
     time = notes[0].start if notes else 0
 
     for note in notes:
-        delay = seconds_to_reversed_str_milliseconds(note.start - time)
-        pitch = int_to_reversed_str(note.pitch)
-        velocity = int_to_reversed_str(note.velocity)
-        duration = seconds_to_reversed_str_milliseconds(note.duration)
+        semipro = note_to_semipro(note, time, configuration)
 
-        line = f'{delay} {pitch} {velocity} {duration}'
-
-        lines.append(line)
+        tokens.extend(semipro)
         time = note.start
 
-    return '\n'.join(lines)
+    return tokens
 
 
-def save_pro(pro, filename):
+def save_pro(pro, filename, configuration):
     notes = []
     time = 0
+    indices = tuple(filterfalse(partial(getitem, pro), range(len(pro))))
 
-    for line in pro.split('\n'):
+    for i, (begin, end) in enumerate(zip(indices, indices[1:] + (len(pro),))):
+        semipro = pro[begin:end]
+
         try:
-            delay, pitch, velocity, duration = line.split()
+            note = semipro_to_note(semipro, time, configuration)
+        except Exception:
+            print(f'Invalid syntax at Line {i}: {semipro}')
+            continue
 
-            delay = reversed_str_milliseconds_to_seconds(delay)
-            pitch = reversed_str_to_int(pitch)
-            velocity = reversed_str_to_int(velocity)
-            duration = reversed_str_milliseconds_to_seconds(duration)
-        except ValueError:
-            print(f'Invalid syntax: {line}')
-        else:
-            pitch = np.clip(pitch, 0, 127)
-            velocity = np.clip(velocity, 0, 127)
-            time += delay
-
-            note = Note(velocity, pitch, time, time + duration)
-
-            notes.append(note)
+        notes.append(note)
+        time = note.start
 
     pm = PrettyMIDI()
     instrument = Instrument(0)
