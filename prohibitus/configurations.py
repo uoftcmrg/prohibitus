@@ -111,7 +111,7 @@ class MidiConfiguration(Configuration):
     betas = 0.9, 0.95
     weight_decay = 0.1
     max_epoch_count = 10000
-    batch_size = 42
+    batch_size = 40
     grad_norm_clip = 1.0
     decay_learning_rate = True
     warmup_token_count = 1e6
