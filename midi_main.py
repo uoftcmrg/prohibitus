@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from torch import empty, multinomial, no_grad
+from torch import empty, long, multinomial, no_grad, tensor
 
 from prohibitus import (
     MidiConfiguration,
@@ -14,8 +14,8 @@ from prohibitus import (
 
 @no_grad()
 def infer(model, context, count, device, configuration):
-    x = empty(1, len(context) + count).to(device)
-    x[0, :len(context)] = context
+    x = empty(1, len(context) + count, dtype=long).to(device)
+    x[0, :len(context)] = tensor(context)
 
     model.eval()
 
@@ -25,7 +25,7 @@ def infer(model, context, count, device, configuration):
         y = multinomial(probabilities, num_samples=1)
         x[:, i:i + 1] = y
 
-    return x.tolist()
+    return x.tolist()[0]
 
 
 def main():
