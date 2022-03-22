@@ -1,13 +1,12 @@
 from abc import ABC
-from math import inf
 
 
 class Configuration(ABC):
     # Data settings
     training_dataset_pathname = None
     test_dataset_pathname = None
-    training_dataset_shuffle_count = 1000000
-    test_dataset_shuffle_count = 100000
+    training_dataset_shuffle_count = None
+    test_dataset_shuffle_count = None
     max_training_dataset_size = None
     max_test_dataset_size = None
 
@@ -51,8 +50,8 @@ class ABCConfiguration(Configuration):
     test_dataset_pathname = None
     training_dataset_shuffle_count = 1000000
     test_dataset_shuffle_count = 1000000
-    max_training_dataset_size = inf
-    max_test_dataset_size = inf
+    max_training_dataset_size = None
+    max_test_dataset_size = None
 
     # Model settings
     attention_drop_percentage = 0.1
