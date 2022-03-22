@@ -83,8 +83,8 @@ class MidiConfiguration(Configuration):
     training_dataset_pathname = './resources/midi/training/**/*.mid'
     test_dataset_pathname = './resources/midi/test/**/*.mid'
     training_dataset_shuffle_count = 1000000
-    test_dataset_shuffle_count = 100000
-    max_training_dataset_size = 100000
+    test_dataset_shuffle_count = 200000
+    max_training_dataset_size = 50000
     max_test_dataset_size = 10000
 
     null = 0
