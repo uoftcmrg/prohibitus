@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from torch import cat, long, multinomial, no_grad, tensor
+from torch import cat, long, no_grad, tensor
 
 from prohibitus import ABCConfiguration, ABCDataset, ABCModel, ABCTrainer
 
@@ -17,8 +17,8 @@ def infer(model, context, count, device, configuration):
     for _ in range(count):
         input_ = x[:, -configuration.chunk_size:]
         probabilities = model(input_)[:, -1, :]
-        y = multinomial(probabilities, num_samples=1)
-        x = cat((x, y), dim=1)
+        y = probabilities.multinomial(1)
+        x = cat((x, y), 1)
 
     completion = ''.join(map(chr, x[0]))
 

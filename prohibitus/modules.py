@@ -2,7 +2,7 @@ from functools import partial
 from math import inf, sqrt
 from operator import getitem
 
-from torch import ones, softmax, tril, zeros
+from torch import ones, zeros
 from torch.nn import (
     Dropout,
     Embedding,
@@ -54,9 +54,15 @@ class CausalSelfAttention(ProhibitusModule):
 
         self.register_buffer(
             'mask',
-            tril(
-                ones(configuration.chunk_size, configuration.chunk_size),
-            ).view(1, 1, configuration.chunk_size, configuration.chunk_size),
+            ones(
+                configuration.chunk_size,
+                configuration.chunk_size,
+            ).tril().view(
+                1,
+                1,
+                configuration.chunk_size,
+                configuration.chunk_size,
+            ),
         )
 
     def forward(self, x):
@@ -77,7 +83,7 @@ class CausalSelfAttention(ProhibitusModule):
             self.mask[:, :, :chunk_size, :chunk_size] == 0,
             -inf,
         )
-        attention = softmax(attention, dim=-1)
+        attention = attention.softmax(-1)
         attention = self.attention_dropout(attention)
 
         y = attention @ value
@@ -118,7 +124,7 @@ class Model(ProhibitusModule):
     @staticmethod
     def _setup(module):
         if isinstance(module, (Linear, Embedding)):
-            module.weight.data.normal_(mean=0, std=0.02)
+            module.weight.data.normal_(0, 0.02)
 
             if isinstance(module, Linear) and module.bias is not None:
                 module.bias.data.zero_()

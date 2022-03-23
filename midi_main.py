@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from torch import empty, long, multinomial, no_grad, softmax, tensor
+from torch import empty, long, no_grad, tensor
 
 from prohibitus import (
     MidiConfiguration,
@@ -26,9 +26,9 @@ def infer(model, context, count, device, configuration):
         if configuration.temperature is not None:
             logits /= configuration.temperature
 
-        probabilities = softmax(logits, -1)
+        probabilities = logits.softmax(-1)
 
-        y = multinomial(probabilities, num_samples=1)
+        y = probabilities.multinomial(1)
         x[:, i:i + 1] = y
 
     return x.tolist()[0]
