@@ -126,4 +126,4 @@ class MidiConfiguration(Configuration):
     checkpoint_pathname = './saves/midi/checkpoint.pt'
 
     # Inference settings
-    temperature = 1
+    temperature = 1.1
