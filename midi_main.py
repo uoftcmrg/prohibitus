@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
+from math import inf
 
-from torch import arange, empty, long, no_grad, tensor
+from torch import empty, long, no_grad, ones, tensor, where, zeros_like
 
 from prohibitus import (
     MidiConfiguration,
@@ -30,9 +31,9 @@ def infer(model, context, count, device, configuration):
         if context[-1] in mask:
             index = (i + 1) % len(masks)
 
-        indices = arange(configuration.token_count)
+        indices = ones(configuration.token_count)
         indices[mask] = 0
-        masks[i] = indices
+        masks[i] = indices.nonzero()
 
     x = empty(1, len(context) + count, dtype=long).to(device)
     x[0, :len(context)] = tensor(context)
@@ -43,10 +44,12 @@ def infer(model, context, count, device, configuration):
         input_ = x[:, max(0, i - configuration.chunk_size):i]
         logits = model(input_)[:, -1, :]
 
+        mask = masks[index]
+        logits[zeros_like(mask), mask] = -inf
+
         if configuration.temperature is not None:
             logits /= configuration.temperature
 
-        logits[masks[index]] = 0
         probabilities = logits.softmax(-1)
         y = probabilities.multinomial(1)
 
