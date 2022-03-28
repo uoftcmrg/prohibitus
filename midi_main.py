@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from torch import empty, long, no_grad, tensor
+from torch import arange, empty, long, no_grad, tensor
 
 from prohibitus import (
     MidiConfiguration,
@@ -14,6 +14,26 @@ from prohibitus import (
 
 @no_grad()
 def infer(model, context, count, device, configuration):
+    if not context:
+        context = 0,
+
+    masks = [
+        tensor(configuration.null),
+        tensor(configuration.delays),
+        tensor(configuration.pitches),
+        tensor(configuration.velocities),
+        tensor(configuration.durations),
+    ]
+    index = None
+
+    for i, mask in enumerate(masks):
+        if context[-1] in mask:
+            index = (i + 1) % len(masks)
+
+        indices = arange(configuration.token_count)
+        indices[mask] = 0
+        masks[i] = indices
+
     x = empty(1, len(context) + count, dtype=long).to(device)
     x[0, :len(context)] = tensor(context)
 
@@ -26,9 +46,11 @@ def infer(model, context, count, device, configuration):
         if configuration.temperature is not None:
             logits /= configuration.temperature
 
+        logits[masks[index]] = 0
         probabilities = logits.softmax(-1)
-
         y = probabilities.multinomial(1)
+
+        index = (index + 1) % len(masks)
         x[:, i:i + 1] = y
 
     return x.tolist()[0]
