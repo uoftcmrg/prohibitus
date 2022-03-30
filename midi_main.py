@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from math import inf
 
-from torch import empty, long, no_grad, ones, tensor, where, zeros_like
+from torch import empty, long, no_grad, ones, tensor, zeros_like
 
 from prohibitus import (
     MidiConfiguration,
