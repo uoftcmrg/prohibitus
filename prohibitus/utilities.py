@@ -111,12 +111,12 @@ def trim_midi(midi_file, start, end):
         )
 
         for note1 in instrument1.notes:
-            if start <= note1.end <= end or start <= note1.start <= end:
+            if start <= note1.start <= end or start <= note1.end <= end:
                 note2 = Note(
                     note1.velocity,
                     note1.pitch,
-                    max(note1.start, start),
-                    min(note1.end, end),
+                    max(note1.start, start) - start,
+                    min(note1.end, end) - start,
                 )
 
                 instrument2.notes.append(note2)
