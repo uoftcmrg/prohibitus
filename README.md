@@ -9,9 +9,24 @@ Music Generation AI by Juho Kim, Minchan Kim, and Nikolas Marinkovich
 - [tqdm](https://github.com/tqdm/tqdm)
 - [PrettyMIDI](https://github.com/craffel/pretty-midi)
 
+## Files
+
+- Configuration: ./prohibitus/configurations.py
+  - Configurations for ABC and Custom file format
+- Dataset: ./prohibitus/datasets.py
+  - Dataset classes for data of both file formats
+- Model: ./prohibitus/modules.py
+  - PyTorch modules for the Transformer model
+- Trainer: ./prohibitus/trainers.py
+  - Trainer classes for models of both file formats
+- Utilities: ./prohibitus/utilities.py
+  - Helper functions for parsing and converting MIDI from/to custom format
+- ABC entrypoint: ./abc_main.py
+- Custom entrypoint: ./midi_main.py
+
 ## Guides
 
-### Generate Music in MIDI file format
+### Generate Music in Custom file format
 
 1. Train AI
 
