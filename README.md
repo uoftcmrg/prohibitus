@@ -12,7 +12,7 @@ Music Generation AI by Juho Kim, Minchan Kim, and Nikolas Marinkovich
 ## Files
 
 - Configuration: ./prohibitus/configurations.py
-  - Configurations for ABC and Custom file format
+  - Configurations for ABC and MIDI/Custom file format
 - Dataset: ./prohibitus/datasets.py
   - Dataset classes for data of both file formats
 - Model: ./prohibitus/modules.py
@@ -26,7 +26,7 @@ Music Generation AI by Juho Kim, Minchan Kim, and Nikolas Marinkovich
 
 ## Guides
 
-### Generate Music in Custom file format
+### Generate Music in MIDI file format
 
 1. Train AI
 
